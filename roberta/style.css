@@ -1,0 +1,18 @@
+body {
+    background-color: #1f2135;
+}
+h1 {
+    color: #c9f7ac;
+    font-family: "Jua", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 80px;
+}
+h2 {
+    color: #fcfef5;
+    font-family: "Noto Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+
+}
