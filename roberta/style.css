@@ -1,18 +1,32 @@
 body {
     background-color: #1f2135;
+    color: #fcfef5;
+    font-family: "Noto Sans", sans-serif;
+    font-weight: 400;
 }
 h1 {
     color: #c9f7ac;
     font-family: "Jua", sans-serif;
-    font-weight: 400;
-    font-style: normal;
     font-size: 80px;
 }
 h2 {
-    color: #fcfef5;
-    font-family: "Noto Sans", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-
+    
+}
+label {
+    margin-top: 20px;
+}
+input {
+    margin-bottom: 20px;
+    background-color: #c9f7ac;
+    padding: 10px;
+    border-radius: 5px;
+    border: 0;
+}
+input[type="submit"] {
+    background-color: white;
+    padding: 10px 25px;
+    margin-top: 15px;
+}
+input[type="submit"]:hover {
+    background-color: #c9f7ac;
 }
