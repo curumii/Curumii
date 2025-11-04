@@ -16,6 +16,7 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto 50px auto;
+    position: relative;
 }
 
 /* ------------------ Navegação ------------------ */
@@ -305,6 +306,40 @@ nav a:hover {
 
 /* ------------------ Cadastro / Perfil ------------------ */
 
+.nome-idade-group {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    gap: 16px;
+    margin-bottom: 30px;
+}
+.email-senha-group {
+    display: grid;
+    grid-template-columns: 33% 33% 32.5%; 
+    gap: 16px; 
+}
+
+.bloco-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Spacing between label and input */
+}
+
+.bloco-info label {
+    display: block;
+}
+
+.bloco-info input {
+    width: 100%;
+}
+
+label.legenda {
+    /* position: absolute; */
+    margin-top: -24px;
+    color: #fff;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
 a.link-esqueci,
 a.link-editar-filtros {
   color: #c4f3a9;
@@ -341,10 +376,6 @@ a.link-editar-filtros:hover {
 }
 
 .cadastro-info-pessoal {
-    display: grid;
-    grid-template-columns: 75% 25%;
-    gap: 15px;
-    margin-bottom: 20px;
     width: 80%;
 }
 
@@ -506,4 +537,16 @@ a.link-editar-filtros:hover {
     color: #999;
     font-size: 1.2em;
     width: 1200px;
+}
+
+/* ------------------ Fallback Sem resultados ------------------ */
+
+img.img-relatorio {
+    width: 100%;
+}
+
+a.link-entrar.btn-float {
+    position: absolute;
+    bottom: 90px;
+    right: 60px;
 }
