@@ -1,0 +1,46 @@
+/* Overlay */
+.modal {
+    /* Esconde o modal por padrão */
+    display: none; 
+    
+    /* Posição fixa para cobrir a tela toda, mesmo ao rolar */
+    position: fixed; 
+    z-index: 1000; /* Garante que fique acima de tudo */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%;
+    
+    /* Fundo escuro semi-transparente */
+    background-color: rgba(0, 0, 0, 0.6); 
+    
+    /* Centraliza o conteúdo do modal (o box) - Estes estilos funcionam quando o JS define display: flex */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Conteúdo do Modal */
+.modal-conteudo {
+  background-color: #1f2235;
+  padding: 30px 50px 70px 50px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 520px;
+  text-align: center;
+  box-shadow: 0 0 40px #c4f3a9;
+  animation: fadeIn 0.3s;
+}
+
+h2.modal-titulo {
+    margin-bottom: 60px;
+}
+
+a.btn-save {
+    text-decoration: none;
+}
+
+/* Opcional: Animação de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}

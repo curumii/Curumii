@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curumii - Curadoria de Conteúdos Infantis</title>
+    <link rel="icon" type="image/png" href="imagens/curumii-icon.png">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+ 
+</head>
+<body>
+    <div class="container">
+        
+        <nav>
+            <ul>
+                <li><a class="ativo" href="index.html">Início</a></li>
+                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="#">Entrar</a></li>
+            </ul>
+        </nav>
+
+        <div class="header">
+            <div class="img-logo-home"><img src="imagens/curumii-logo2.png"></div>
+            <h1 class="site-subtitle">Curadoria de Conteúdos Infantis</h1>
+            <!-- <h2 class="page-title">Bem-vindo</h2> -->
+        </div>
+
+        <div class="apresenta-site">
+            <h2>Home Page - Área para a apresentação do site. </h2>
+            <p>Apresenta o objetivo e funções do site de maneira simples e direta.</p>
+            <p>Conceito: uma home page com filtros integrados de maneira que o visitante já pode começar a usar direto sem precisar fazer o cadastro. </p>
+            <p>E se depois de selecionar opções de filtros ele clicar no botão "Salvar minhas opções" ai sim ele é direcionado para a página de cadastro. </p>
+            <p>Por quê? A ideia é inverter a lógica típica de pedir primeiro informações pessoais e fazer com que a pessoa tenha um esforço grande antes de poder usar o serviço. Em outras palavras, quebrar qualquer barreira de entrada.</p>
+        </div>
+
+        <div class="filters">
+            <h2>Vamos filtrar seu conteúdo</h2>
+            <p class="instrucao">Me conte o que você quer assistir:</p>
+            
+            <input type="text" class="search-box" id="searchBox" placeholder="Pesquisar por título ou descrição...">
+            
+            <div class="filter-group">
+                <div class="filter-item">
+                    <label for="filterDuracao">Duração</label>
+                    <select id="filterDuracao">
+                        <option value="">Todas</option>
+                        <option value="curta">Menos de 30 minutos</option>
+                        <option value="media">Entre 30 minutos e 1 hora</option>
+                        <option value="longa">Mais de 1 hora</option>
+                    </select>
+                </div>
+                
+                <div class="filter-item">
+                    <label>Gênero</label>
+                    <div class="dropdown-genero">
+                        <div class="dropdown-toggle" id="generoToggle" onclick="toggleGeneroDropdown()">
+                            <span id="generoLabel">Todos os Gêneros</span>
+                            <span>▼</span>
+                        </div>
+                        <div class="dropdown-menu" id="generoDropdown">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="genero-todos" value="Todos" onchange="updateGeneroFilter(true)">
+                                <label for="genero-todos"><strong>Todos</strong></label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="genero-arte" value="Arte" onchange="updateGeneroFilter()">
+                                <label for="genero-arte">Arte</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="genero-aventura" value="Aventura" onchange="updateGeneroFilter()">
+                                <label for="genero-aventura">Aventura</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="genero-educativo" value="Educativo" onchange="updateGeneroFilter()">
+                                <label for="genero-educativo">Educativo</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="genero-fantasia" value="Fantasia" onchange="updateGeneroFilter()">
+                                <label for="genero-fantasia">Fantasia</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="genero-musical" value="Musical" onchange="updateGeneroFilter()">
+                                <label for="genero-musical">Musical</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="filter-item">
+                    <label for="filterIdade">Classificação Etária</label>
+                    <select id="filterIdade">
+                        <option value="">Todas as Idades</option>
+                        <option value="Livre">Livre</option>
+                        <option value="10">10 anos</option>
+                        <option value="12">12 anos</option>
+                        <option value="14">14 anos</option>
+                        <option value="16">16 anos</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <label for="filterPlataforma">Plataforma</label>
+                    <select id="filterPlataforma">
+                        <option value="">Todas</option>
+                        <option value="Netflix">Netflix</option>
+                        <option value="Disney+">Disney+</option>
+                        <option value="Prime Video">Prime Video</option>
+                        <option value="HBO Max">HBO Max</option>
+                        <option value="Globoplay">Globoplay</option>
+                        <option value="Apple TV">Apple TV</option>
+                        <option value="YouTube">YouTube</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <label for="filterLuz">Sensibilidade à Luz</label>
+                    <select id="filterLuz">
+                        <option value="">Todas</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                </div>
+
+                
+            </div>
+
+            <div class="selected-filters">
+                <ul>
+                    <li class="tag duracao">Duração: menos de 30min</li>
+                    <li class="tag genero">Gênero: Aventura, Fantasia</li>
+                    <li class="tag idade">Idade: Livre</li>
+                    <li class="tag plataforma">Plataformas: Todas</li>
+                    <li class="tag luz">Sensibilidade à Luz: Sim</li>
+                </ul>
+            </div>
+
+            <button class="btn-clear" onclick="clearFilters()">Limpar Filtros</button>
+            <a class="btn-save" href="cadastro.html">Salvar minhas opções</a>
+        </div>
+
+        <div class="results-info" id="resultsInfo"></div>
+
+        <div id="loading" class="loading">Carregando dados...</div>
+        <div id="itemsContainer" class="items-grid"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="js/filter.js"></script>
+    
+</body>
+</html>
