@@ -3,24 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Curumii</title>
+    <title>Curumii - Perfil</title>
     <link rel="icon" type="image/png" href="imagens/curumii-icon.png">
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-
-<style>
-    .filters {
-      display: none;
-    }
-</style> 
-
+    <link rel="stylesheet" type="text/css" href="css/modal.css">    
 </head>
 <body>
+
     <div class="container">
-        
+
         <nav>
             <ul>
-                <li><a class="ativo" href="meu-curumii.html">Meu Curumii</a></li>
-                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="meu-curumii.html">Meu Curumii</a></li>
+                <li><a class="ativo" href="perfil.html">Perfil</a></li>
                 <li><a href="relatorio.html">Relatório</a></li>
                 <li><a href="index.html">Sair</a></li>
             </ul>
@@ -29,27 +24,35 @@
         <div class="header">
             <div class="img-logo"><img src="imagens/curumii-logo.png"></div>
             <h1 class="site-subtitle">Curadoria de Conteúdos Infantis</h1>
-            <h2 class="page-title">Meu Curumii</h2>
+            <h2 class="page-title">Perfil</h2>
         </div>
+        
 
-        <div class="selected-filters">
-            <ul>
-                <li class="tag duracao">Duração: menos de 30min</li>
-                <li class="tag genero">Gênero: Aventura, Fantasia</li>
-                <li class="tag idade">Idade: Livre</li>
-                <li class="tag plataforma">Plataformas: Todas</li>
-                <li class="tag luz">Sensibilidade à Luz: Sim</li>
-                <li><a class="link-editar-filtros" href="perfil.html">Editar Filtros</a></li>
-            </ul>
-            <br>
+        <div class="cadastro">
+            <h2>Suas informções pessoais:</h2>
+            <!-- <p class="instrucao">Sobre você:</p> -->
+
+                <div class="cadastro-avatar">
+                    <img src="imagens/curumii-icon.png">
+                </div>
+
+                <div class="cadastro-info-pessoal">
+                    <input type="text" class="form-cadastro form-nome" id="cadastroNome" placeholder="Nome">
+                    <input type="text" class="form-cadastro form-idade" id="cadastroIdade" placeholder="Idade">
+                </div>
+
+                <div class="cadastro-email">
+                    <input type="text" class="form-cadastro form-nome" id="cadastroEmail" placeholder="Email">
+                    <input type="text" class="form-cadastro form-idade" id="cadastroEmail" placeholder="Senha">
+                    <input type="text" class="form-cadastro form-idade" id="cadastroEmail" placeholder="Confirmar Senha">
+                </div>
+                
         </div>
 
         <div class="filters">
-            <h2>Vamos filtrar seu conteúdo</h2>
-            <p class="instrucao">Me conte o que você quer assistir:</p>
-            
-            <input type="text" class="search-box" id="searchBox" placeholder="Pesquisar por título ou descrição...">
-            
+            <h2>Seus filtros:</h2>
+            <!-- <p class="instrucao">Você pode mudá-los a qualquer momento.</p> -->
+                        
             <div class="filter-group">
                 <div class="filter-item">
                     <label for="filterDuracao">Duração</label>
@@ -110,15 +113,6 @@
                 </div>
 
                 <div class="filter-item">
-                    <label for="filterLuz">Sensibilidade à Luz</label>
-                    <select id="filterLuz">
-                        <option value="">Todas</option>
-                        <option value="Sim">Sim</option>
-                        <option value="Não">Não</option>
-                    </select>
-                </div>
-
-                <div class="filter-item">
                     <label for="filterPlataforma">Plataforma</label>
                     <select id="filterPlataforma">
                         <option value="">Todas</option>
@@ -131,20 +125,52 @@
                         <option value="YouTube">YouTube</option>
                     </select>
                 </div>
+
+                <div class="filter-item">
+                    <label for="filterLuz">Sensibilidade à Luz</label>
+                    <select id="filterLuz">
+                        <option value="">Todas</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="selected-filters">
+                <ul>
+                    <li class="tag duracao">Duração: menos de 30min</li>
+                    <li class="tag genero">Gênero: Aventura, Fantasia</li>
+                    <li class="tag idade">Idade: Livre</li>
+                    <li class="tag plataforma">Plataformas: Todas</li>
+                    <li class="tag luz">Sensibilidade à Luz: Sim</li>
+                </ul>
             </div>
 
             <button class="btn-clear" onclick="clearFilters()">Limpar Filtros</button>
-            <button class="btn-save" onclick="saveFilters()">Salvar minhas opções</button>
+            <br><br>
+            <h2>Tudo certo?</h2>
+            <p class="instrucao">Se precisar, você pode voltar e editar suas informações.</p>
+            
+            <button class="btn-save" id="abrirModalBtn">Atualizar</button>
+
+            <div id="meuModal" class="modal">
+                <div class="modal-conteudo">
+                    <h2 class="modal-titulo">🎉 Perfil atualizado com sucesso!</h2>
+                    <a href="meu-curumii.html" class="btn-save">Ver Meu Curumii</a>
+                </div>
+            </div>
+
+
+
         </div>
 
-        <div class="results-info" id="resultsInfo"></div>
+        <!-- <div class="results-info" id="resultsInfo"></div> -->
 
-        <div id="loading" class="loading">Carregando dados...</div>
+        <!-- <div id="loading" class="loading">Carregando dados...</div> -->
         <div id="itemsContainer" class="items-grid"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="js/filter.js"></script>
-    
+    <script src="js/modal.js"></script>
 </body>
 </html>
