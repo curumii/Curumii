@@ -306,6 +306,14 @@ nav a:hover {
 
 /* ------------------ Cadastro / Perfil ------------------ */
 
+.instrucao2 {
+    color: #c4f3a9;
+    font-size: 21px;
+    font-weight: 600;
+    margin-top: 10px;
+    padding-bottom: 20px;
+}
+
 .nome-idade-group {
     display: grid;
     grid-template-columns: 75% 25%;
@@ -314,7 +322,7 @@ nav a:hover {
 }
 .email-senha-group {
     display: grid;
-    grid-template-columns: 33% 33% 32.5%; 
+    grid-template-columns: 33% 33% 27%; 
     gap: 16px; 
 }
 
