@@ -306,6 +306,19 @@ nav a:hover {
 
 /* ------------------ Cadastro / Perfil ------------------ */
 
+.perfil-abas {
+    display: block;
+    margin-bottom: 30px;
+}
+
+.perfil-abas span {
+    color: white;
+    padding: 15px 30px;
+    background-color: #014a7a;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+
 .instrucao2 {
     color: #c4f3a9;
     font-size: 21px;
@@ -557,4 +570,84 @@ a.link-entrar.btn-float {
     position: absolute;
     bottom: 90px;
     right: 60px;
+}
+
+/* =====================================================
+   ADICIONE ESTE CSS NO FINAL DO SEU styles.css
+   ===================================================== */
+
+/* Container do botão Ver Mais */
+.load-more-container {
+    text-align: center;
+    margin: 40px 0;
+    padding: 20px;
+}
+
+/* Botão Ver Mais */
+.btn-load-more {
+    background: linear-gradient(135deg, #014a7a 0%, #7b9871 100%);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: "Quicksand", sans-serif;
+    font-size: 1.1em;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(196, 243, 169, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-load-more:hover {
+    background: linear-gradient(135deg, #7b9871 0%, #c4f3a9 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(196, 243, 169, 0.5);
+}
+
+.btn-load-more:active {
+    transform: translateY(0);
+}
+
+/* Animação dos pontinhos */
+.btn-load-more .dots {
+    font-size: 1.5em;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* Texto abaixo do botão */
+.load-more-text {
+    color: #c4f3a9;
+    font-size: 0.9em;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+/* Animação quando novos cards aparecem */
+.item-card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
