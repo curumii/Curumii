@@ -651,3 +651,16 @@ a.link-entrar.btn-float {
         transform: translateY(0);
     }
 }
+
+
+.main-filter-section {
+    position: relative; 
+}
+
+.search-gif {
+    position: absolute;
+    top: 500px;
+    right: 20px;
+    width: 250px;
+    height: auto;
+}
