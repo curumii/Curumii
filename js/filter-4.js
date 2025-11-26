@@ -1,14 +1,14 @@
 // ========================================================================
-// SCRIPT CURUMII - VERSÃO FINAL (DELEGAÇÃO DE EVENTOS) ⚡
+// SCRIPT CURUMII - VERSÃO CORRIGIDA ⚡
 // ========================================================================
-console.log("Script Curumii: Versão Final Ativa ⚡");
+console.log("Script Curumii: Versão Corrigida - Player Funcionando! ⚡");
 
 let allData = [];
 let filteredData = [];
 let selectedGeneros = [];
 
 // Configurações
-let itemsToShow = 6;
+let itemsToShow = 999; // Mostra todos os itens de uma vez
 const itemsPerLoad = 6;
 const USE_ONLINE = false;
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT0var1VwvNMPs4QRTB5Al3f8hjzrp5BQ2WLY17GoblJSCiOadsdvb8wZoiCviFFxgUFvO243zg8DIs/pub?gid=0&single=true&output=csv';
@@ -43,22 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function setupEventListeners() {
-    // 1. DELEGAÇÃO DE EVENTOS PARA O CLICK NOS CARDS
-    // Isso garante que o clique funcione mesmo em itens criados depois
     const container = document.getElementById('itemsContainer');
     if (container) {
         container.addEventListener('click', function(e) {
-            // Procura se o clique foi dentro de um card
             const card = e.target.closest('.item-card');
             if (card) {
                 const url = card.getAttribute('data-url');
-                console.log("Card clicado! URL:", url); // Debug
+                console.log("🎬 Card clicado! URL:", url);
                 handleCardClick(url);
             }
         });
     }
 
-    // Listeners de filtros
     ['filterDuracao', 'filterIdade', 'filterLuz', 'filterPlataforma'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('change', applyFilters);
@@ -67,7 +63,6 @@ function setupEventListeners() {
     const searchBox = document.getElementById('searchBox');
     if (searchBox) searchBox.addEventListener('input', applyFilters);
 
-    // Fechar Player
     const btnClose = document.getElementById('closePlayer');
     if (btnClose) btnClose.addEventListener('click', closeVideoPlayer);
     
@@ -89,12 +84,13 @@ async function loadData() {
             header: true,
             complete: (results) => {
                 allData = results.data.filter(row => row.Título && row.Título.trim() !== '');
+                console.log("✅ Dados carregados:", allData.length, "itens");
                 initializeFilters();
                 applyFilters();
             }
         });
     } catch (error) {
-        console.error('Erro:', error);
+        console.error('❌ Erro:', error);
     }
 }
 
@@ -104,7 +100,6 @@ function renderItems() {
     
     if (!container) return;
 
-    // Atualiza Info
     if (info) {
         const total = filteredData.length;
         const showing = Math.min(itemsToShow, total);
@@ -118,16 +113,13 @@ function renderItems() {
         return;
     }
 
-    // Renderiza HTML
     const itemsToDisplay = filteredData.slice(0, itemsToShow);
     container.innerHTML = itemsToDisplay.map(item => {
         const thumb = item.Imagem || 'https://via.placeholder.com/400x200?text=Sem+Imagem';
-        // Escapa aspas para evitar quebrar o HTML
-        const safeUrl = String(item.URL || '').replace(/'/g, "\\'");
-        const safeTitle = String(item.Título || '').replace(/'/g, "\\'");
+        const safeUrl = (item.URL || '').replace(/"/g, '&quot;');
         
         return `
-        <div class="item-card" data-url='${safeUrl}'>
+        <div class="item-card" data-url="${safeUrl}">
             <img src="${thumb}" alt="${item.Título}" class="item-image">
             <div class="item-content">
                 <div class="item-title">${item.Título}</div>
@@ -144,15 +136,24 @@ function renderItems() {
 }
 
 // =====================================================
-// LÓGICA DO PLAYER (MODAL)
+// LÓGICA DO PLAYER (MODAL) - CORRIGIDA! ✅
 // =====================================================
 function handleCardClick(url) {
-    if (!url) return;
-    const isYouTube = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)/i.test(url);
+    if (!url) {
+        console.warn("⚠️ URL vazia ou inválida");
+        return;
+    }
+    
+    console.log("🔍 Analisando URL:", url);
+    
+    // Detecta se é YouTube
+    const isYouTube = /(?:youtube\.com|youtu\.be)/i.test(url);
     
     if (isYouTube) {
+        console.log("✅ É um vídeo do YouTube! Abrindo player...");
         openVideoPlayer(url);
     } else {
+        console.log("🔗 Não é YouTube, abrindo em nova aba");
         window.open(url, '_blank');
     }
 }
@@ -162,35 +163,55 @@ function openVideoPlayer(url) {
     const wrapper = document.getElementById('playerWrapper');
 
     if (!modal || !wrapper) {
-        console.error("Modal ou Wrapper não encontrados!");
+        console.error("❌ Modal ou Wrapper não encontrados!");
         return;
     }
 
+    // REGEX ATUALIZADA - Remove tudo após ? ou & para pegar só o ID
     let videoId = '';
-    const shortMatch = url.match(/youtu\.be\/([^\?&]+)/);
-    const longMatch = url.match(/[?&]v=([^&]+)/);
     
-    if (shortMatch) videoId = shortMatch[1];
-    else if (longMatch) videoId = longMatch[1];
+    // Formato youtu.be/VIDEO_ID (ignora ?si= e outros parâmetros)
+    const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
     
-    if (!videoId) return;
+    // Formato youtube.com/watch?v=VIDEO_ID
+    const longMatch = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+    
+    // Formato youtube.com/embed/VIDEO_ID
+    const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+    
+    if (shortMatch) {
+        videoId = shortMatch[1].split('?')[0].split('&')[0]; // Remove parâmetros extras
+        console.log("📹 ID extraído (youtu.be):", videoId);
+    } else if (longMatch) {
+        videoId = longMatch[1].split('&')[0]; // Remove parâmetros extras
+        console.log("📹 ID extraído (youtube.com/watch):", videoId);
+    } else if (embedMatch) {
+        videoId = embedMatch[1].split('?')[0]; // Remove parâmetros extras
+        console.log("📹 ID extraído (youtube.com/embed):", videoId);
+    } else {
+        console.error("❌ Não foi possível extrair o ID do vídeo da URL:", url);
+        alert("Erro ao carregar vídeo. URL inválida.");
+        return;
+    }
 
-    // Código oficial e limpo
+    console.log("🎯 ID final limpo:", videoId);
+
+    // URL de embed LIMPA, sem parâmetros extras que causam erro 153
     wrapper.innerHTML = `
         <iframe 
             width="100%" 
             height="100%" 
-            src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+            src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
             title="YouTube video player" 
             frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen
             style="position:absolute; left:0; top:0; width:100%; height:100%; border-radius:8px;">
         </iframe>`;
 
     modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
+    console.log("✅ Player aberto com ID:", videoId);
 }
 
 function closeVideoPlayer() {
@@ -201,10 +222,10 @@ function closeVideoPlayer() {
         modal.style.display = 'none';
         modal.setAttribute('aria-hidden', 'true');
     }
-    // Limpa o HTML para parar o vídeo imediatamente
     if (wrapper) {
         wrapper.innerHTML = '';
     }
+    console.log("🔴 Player fechado");
 }
 
 // =====================================================
@@ -217,7 +238,7 @@ function initializeFilters() {
 }
 
 function applyFilters() {
-    itemsToShow = itemsPerLoad; // Reseta paginação ao filtrar
+    itemsToShow = itemsPerLoad;
     const searchTerm = document.getElementById('searchBox')?.value.toLowerCase() || '';
     const duracao = document.getElementById('filterDuracao').value;
     const idade = document.getElementById('filterIdade').value;
@@ -262,16 +283,14 @@ function loadMoreItems() {
     renderItems();
 }
 
-// Helpers simples
+// Helpers
 function parseDuration(d) { if(!d)return 0; const p=d.split(':'); return (parseInt(p[0])||0)*60+(parseInt(p[1])||0); }
 function getDurationCategory(d) { const m=parseDuration(d); return m<30?'curta':m<=60?'media':'longa'; }
 function formatDuration(d) { if(!d)return ''; const p=d.split(':'); const h=parseInt(p[0]),m=parseInt(p[1]); return h>0?`${h}h${m}min`:`${m}min`; }
 function checkAgeFilter(c,f) { if(!f||f==='Livre')return c==='Livre'; const o=['Livre','10','12','14','16']; return o.indexOf(c)<=o.indexOf(f); }
 function toggleGeneroDropdown() { document.getElementById('generoDropdown')?.classList.toggle('show'); }
+function updateSelectedFilters() { /* Tags visuais */ }
 
-function updateSelectedFilters() { /* Mantenha sua lógica visual de tags aqui se desejar */ }
-
-// Listener para fechar dropdown
 document.addEventListener('click', e => {
     const d = document.getElementById('generoDropdown');
     const t = document.getElementById('generoToggle');
