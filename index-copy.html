@@ -154,7 +154,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="js/filter-3-modal.js"></script>
-    <script>
+    <!-- TESTE: Adicione este script ANTES do </body> para verificar se tudo está correto -->
+<script>
     console.log("🔍 DIAGNÓSTICO DO SISTEMA:");
     
     // Verifica se os elementos existem
@@ -176,9 +177,9 @@
         const container = document.getElementById('itemsContainer');
         if (container) {
             console.log("\n🎯 Testando event listener do container...");
-            // O listener agora é delegado e usa 'data-url' para funcionar corretamente
-            // A verificação abaixo é apenas indicativa
-            console.log("✅ Listener será testado ao clicar em um card. Procure 'Clique detectado!' no console.");
+            const hasListener = container.onclick || 
+                                 container.addEventListener.toString().includes('click');
+            console.log(hasListener ? "✅ Listener detectado" : "⚠️ Listener pode não estar ativo");
         }
         
         console.log("\n💡 Se aparecer '❌', o elemento está faltando no HTML!");

@@ -15,9 +15,10 @@ function setupPlayerEventListeners() {
             const card = e.target.closest('.item-card');
             
             if (card) {
-                e.preventDefault();
+                e.preventDefault(); // ESSENCIAL: Impede o comportamento padrão do link/onclick
                 e.stopPropagation();
                 
+                // ⚠️ CORREÇÃO CRÍTICA: Pega a URL do novo atributo data-url
                 const url = card.getAttribute('data-url');
                 console.log("🎬 Card encontrado! URL:", url);
                 handleCardClick(url);
@@ -53,10 +54,13 @@ function setupPlayerEventListeners() {
         if (el) el.addEventListener('change', applyFilters);
     });
     
-    const searchBox = document.querySelector('.search-box'); // CORRIGIDO
+    // ⚠️ CORREÇÃO: Usando o ID real da barra de busca
+    const searchBox = document.getElementById('searchBox'); 
     if (searchBox) {
         searchBox.addEventListener('input', applyFilters);
         console.log("✅ Barra de busca configurada");
+    } else {
+        console.error("❌ Barra de busca não encontrada! ID esperado: 'searchBox'");
     }
     
     console.log("✅ Todos os event listeners configurados!");
@@ -153,7 +157,6 @@ function closeVideoPlayer() {
     }
     console.log("🔴 Player fechado");
 }
-
 // =====================================================
 // CÓDIGO COMPLETO PARA SUBSTITUIR O filter.js
 // =====================================================
@@ -294,6 +297,8 @@ function processCSV(csvText) {
             console.log('Dados carregados com sucesso:', allData.length, 'itens');
             initializeFilters();
             applyFilters();
+            // É crucial chamar setupPlayerEventListeners APÓS o DOM estar carregado
+            // Mas ele será chamado no final do script
         },
         error: function(error) {
             console.error('Erro ao processar CSV:', error);
@@ -456,8 +461,10 @@ function renderItems(hasActiveFilters) {
     // Mostra apenas os primeiros itemsToShow itens
     const itemsToDisplay = filteredData.slice(0, itemsToShow);
     
+    // ⚠️ CORREÇÃO CRÍTICA APLICADA AQUI: Removido o onclick inline.
+    // O clique agora é tratado exclusivamente pelo event listener delegado.
     container.innerHTML = itemsToDisplay.map(item => `
-        <div class="item-card" onclick="window.open('${item.URL}', '_blank')">
+        <div class="item-card" data-url="${item.URL}">
             <img src="${item.Imagem || 'https://via.placeholder.com/400x200?text=Sem+Imagem'}" 
                  alt="${item.Título}" 
                  class="item-image"
@@ -479,6 +486,25 @@ function renderItems(hasActiveFilters) {
     // Adiciona o botão "Ver Mais" se houver mais itens para mostrar
     showLoadMoreButton();
 }
+
+function showLoadMoreButton() {
+    const container = document.getElementById('itemsContainer');
+    // Remove o botão anterior, se existir
+    let existingButton = document.getElementById('loadMoreButton');
+    if (existingButton) {
+        existingButton.remove();
+    }
+
+    if (filteredData.length > itemsToShow) {
+        const button = document.createElement('button');
+        button.id = 'loadMoreButton';
+        button.className = 'btn-load-more';
+        button.textContent = 'Ver Mais Conteúdos';
+        button.onclick = loadMoreItems;
+        container.parentNode.insertBefore(button, container.nextSibling); 
+    }
+}
+
 
 function clearFilters() {
     const searchBox = document.getElementById('searchBox');
@@ -521,15 +547,13 @@ function loadMoreItems() {
 // =====================================================
 // EVENT LISTENERS
 // =====================================================
-const searchBox = document.getElementById('searchBox');
-if (searchBox) {
-    searchBox.addEventListener('input', applyFilters);
-}
+// Removi a re-declaração dos listeners que já estão em setupPlayerEventListeners
+// e adicionei a chamada principal
 
-document.getElementById('filterDuracao').addEventListener('change', applyFilters);
-document.getElementById('filterIdade').addEventListener('change', applyFilters);
-document.getElementById('filterLuz').addEventListener('change', applyFilters);
-document.getElementById('filterPlataforma').addEventListener('change', applyFilters);
+// 1. Configura os Listeners do Modal/Filtro (incluindo a barra de busca)
+setupPlayerEventListeners();
 
-// Carregar dados ao iniciar
+// 2. Carregar dados ao iniciar
 loadData();
+
+// Nota: A função showLoadMoreButton também foi adicionada para garantir que o botão "Ver Mais" seja recriado corretamente a cada renderização.
