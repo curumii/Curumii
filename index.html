@@ -40,7 +40,7 @@
                 <h2>Vamos filtrar seu conteúdo</h2>
                <p class="instrucao">Me conte o que você quer assistir:</p>
                 
-                <input type="text" class="search-box" placeholder="Pesquisar por título ou descrição...">
+                <input type="text"  id="searchBox" placeholder="Pesquisar por título ou descrição...">
             </div>
             
             <div class="filter-group">
@@ -150,8 +150,41 @@
         <div id="playerWrapper"></div>
     </div>
 </div>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="js/filter-3-modal.js"></script>
+    <!-- TESTE: Adicione este script ANTES do </body> para verificar se tudo está correto -->
+<script>
+    console.log("🔍 DIAGNÓSTICO DO SISTEMA:");
     
+    // Verifica se os elementos existem
+    setTimeout(() => {
+        const checks = {
+            'Container de itens': document.getElementById('itemsContainer'),
+            'Modal de vídeo': document.getElementById('videoModal'),
+            'Player wrapper': document.getElementById('playerWrapper'),
+            'Botão fechar': document.getElementById('closePlayer'),
+            'Barra de busca': document.getElementById('searchBox')
+        };
+        
+        console.log("\n📋 Checklist de elementos:");
+        Object.entries(checks).forEach(([name, el]) => {
+            console.log(el ? `✅ ${name}: OK` : `❌ ${name}: NÃO ENCONTRADO`);
+        });
+        
+        // Testa se o clique está funcionando
+        const container = document.getElementById('itemsContainer');
+        if (container) {
+            console.log("\n🎯 Testando event listener do container...");
+            const hasListener = container.onclick || 
+                                 container.addEventListener.toString().includes('click');
+            console.log(hasListener ? "✅ Listener detectado" : "⚠️ Listener pode não estar ativo");
+        }
+        
+        console.log("\n💡 Se aparecer '❌', o elemento está faltando no HTML!");
+    }, 1000);
+</script>
+
 </body>
 </html>

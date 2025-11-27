@@ -1,4 +1,160 @@
 // =====================================================
+// CONFIGURAÇÃO DE EVENTOS - DEVE SER CHAMADO PRIMEIRO!
+// =====================================================
+function setupPlayerEventListeners() {
+    console.log("🎯 Configurando event listeners do player...");
+    
+    // 1. DELEGAÇÃO DE EVENTOS para cliques nos cards
+    const container = document.getElementById('itemsContainer');
+    if (container) {
+        // Adiciona listener usando delegação
+        container.addEventListener('click', function(e) {
+            console.log("👆 Clique detectado!", e.target);
+            
+            // Procura o card clicado
+            const card = e.target.closest('.item-card');
+            
+            if (card) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const url = card.getAttribute('data-url');
+                console.log("🎬 Card encontrado! URL:", url);
+                handleCardClick(url);
+            } else {
+                console.log("⚠️ Clique fora do card");
+            }
+        }, true); // IMPORTANTE: use capture phase
+        
+        console.log("✅ Event listener do container configurado");
+    } else {
+        console.error("❌ Container não encontrado!");
+    }
+
+    // 2. Botão de fechar player
+    const btnClose = document.getElementById('closePlayer');
+    if (btnClose) {
+        btnClose.addEventListener('click', closeVideoPlayer);
+        console.log("✅ Botão fechar configurado");
+    }
+    
+    // 3. Fechar ao clicar no fundo escuro
+    const modal = document.getElementById('videoModal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeVideoPlayer();
+        });
+        console.log("✅ Modal backdrop configurado");
+    }
+    
+    // 4. Event listeners dos filtros
+    ['filterDuracao', 'filterIdade', 'filterLuz', 'filterPlataforma'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', applyFilters);
+    });
+    
+    const searchBox = document.querySelector('.search-box'); // CORRIGIDO
+    if (searchBox) {
+        searchBox.addEventListener('input', applyFilters);
+        console.log("✅ Barra de busca configurada");
+    }
+    
+    console.log("✅ Todos os event listeners configurados!");
+}
+
+function handleCardClick(url) {
+    if (!url) {
+        console.warn("⚠️ URL vazia ou inválida");
+        return;
+    }
+    
+    console.log("🔍 Analisando URL:", url);
+    
+    // Detecta se é YouTube
+    const isYouTube = /(?:youtube\.com|youtu\.be)/i.test(url);
+    
+    if (isYouTube) {
+        console.log("✅ É um vídeo do YouTube! Abrindo player...");
+        openVideoPlayer(url);
+    } else {
+        console.log("🔗 Não é YouTube, abrindo em nova aba");
+        window.open(url, '_blank');
+    }
+}
+
+function openVideoPlayer(url) {
+    const modal = document.getElementById('videoModal');
+    const wrapper = document.getElementById('playerWrapper');
+
+    if (!modal || !wrapper) {
+        console.error("❌ Modal ou Wrapper não encontrados!");
+        return;
+    }
+
+    // REGEX ATUALIZADA - Remove tudo após ? ou & para pegar só o ID
+    let videoId = '';
+    
+    // Formato youtu.be/VIDEO_ID (ignora ?si= e outros parâmetros)
+    const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+    
+    // Formato youtube.com/watch?v=VIDEO_ID
+    const longMatch = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+    
+    // Formato youtube.com/embed/VIDEO_ID
+    const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+    
+    if (shortMatch) {
+        videoId = shortMatch[1].split('?')[0].split('&')[0]; // Remove parâmetros extras
+        console.log("📹 ID extraído (youtu.be):", videoId);
+    } else if (longMatch) {
+        videoId = longMatch[1].split('&')[0]; // Remove parâmetros extras
+        console.log("📹 ID extraído (youtube.com/watch):", videoId);
+    } else if (embedMatch) {
+        videoId = embedMatch[1].split('?')[0]; // Remove parâmetros extras
+        console.log("📹 ID extraído (youtube.com/embed):", videoId);
+    } else {
+        console.error("❌ Não foi possível extrair o ID do vídeo da URL:", url);
+        alert("Erro ao carregar vídeo. URL inválida.");
+        return;
+    }
+
+    console.log("🎯 ID final limpo:", videoId);
+
+    // URL de embed LIMPA, sem parâmetros extras que causam erro 153
+    wrapper.innerHTML = `
+        <iframe 
+            width="100%" 
+            height="100%" 
+            src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            style="position:absolute; left:0; top:0; width:100%; height:100%; border-radius:8px;">
+        </iframe>`;
+
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    console.log("✅ Player aberto com ID:", videoId);
+}
+
+function closeVideoPlayer() {
+    const modal = document.getElementById('videoModal');
+    const wrapper = document.getElementById('playerWrapper');
+    
+    if (modal) {
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden', 'true');
+    }
+    // Limpa o HTML para parar o vídeo imediatamente
+    if (wrapper) {
+        wrapper.innerHTML = '';
+    }
+    console.log("🔴 Player fechado");
+}
+
+// =====================================================
 // CÓDIGO COMPLETO PARA SUBSTITUIR O filter.js
 // =====================================================
 
@@ -153,100 +309,6 @@ function showError(message) {
             ${message}<br><br>
             <em>Modo atual: ${USE_ONLINE ? 'Online (Google Sheets)' : 'Local (CSV inline)'}</em>
         </div>`;
-}
-
-
-// =====================================================
-// LÓGICA DO PLAYER (MODAL) - CORRIGIDA! ✅
-// =====================================================
-function handleCardClick(url) {
-    if (!url) {
-        console.warn("⚠️ URL vazia ou inválida");
-        return;
-    }
-    
-    console.log("🔍 Analisando URL:", url);
-    
-    // Detecta se é YouTube
-    const isYouTube = /(?:youtube\.com|youtu\.be)/i.test(url);
-    
-    if (isYouTube) {
-        console.log("✅ É um vídeo do YouTube! Abrindo player...");
-        openVideoPlayer(url);
-    } else {
-        console.log("🔗 Não é YouTube, abrindo em nova aba");
-        window.open(url, '_blank');
-    }
-}
-
-function openVideoPlayer(url) {
-    const modal = document.getElementById('videoModal');
-    const wrapper = document.getElementById('playerWrapper');
-
-    if (!modal || !wrapper) {
-        console.error("❌ Modal ou Wrapper não encontrados!");
-        return;
-    }
-
-    // REGEX ATUALIZADA - Remove tudo após ? ou & para pegar só o ID
-    let videoId = '';
-    
-    // Formato youtu.be/VIDEO_ID (ignora ?si= e outros parâmetros)
-    const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-    
-    // Formato youtube.com/watch?v=VIDEO_ID
-    const longMatch = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
-    
-    // Formato youtube.com/embed/VIDEO_ID
-    const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
-    
-    if (shortMatch) {
-        videoId = shortMatch[1].split('?')[0].split('&')[0]; // Remove parâmetros extras
-        console.log("📹 ID extraído (youtu.be):", videoId);
-    } else if (longMatch) {
-        videoId = longMatch[1].split('&')[0]; // Remove parâmetros extras
-        console.log("📹 ID extraído (youtube.com/watch):", videoId);
-    } else if (embedMatch) {
-        videoId = embedMatch[1].split('?')[0]; // Remove parâmetros extras
-        console.log("📹 ID extraído (youtube.com/embed):", videoId);
-    } else {
-        console.error("❌ Não foi possível extrair o ID do vídeo da URL:", url);
-        alert("Erro ao carregar vídeo. URL inválida.");
-        return;
-    }
-
-    console.log("🎯 ID final limpo:", videoId);
-
-    // URL de embed LIMPA, sem parâmetros extras que causam erro 153
-    wrapper.innerHTML = `
-        <iframe 
-            width="100%" 
-            height="100%" 
-            src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen
-            style="position:absolute; left:0; top:0; width:100%; height:100%; border-radius:8px;">
-        </iframe>`;
-
-    modal.style.display = 'flex';
-    modal.setAttribute('aria-hidden', 'false');
-    console.log("✅ Player aberto com ID:", videoId);
-}
-
-function closeVideoPlayer() {
-    const modal = document.getElementById('videoModal');
-    const wrapper = document.getElementById('playerWrapper');
-    
-    if (modal) {
-        modal.style.display = 'none';
-        modal.setAttribute('aria-hidden', 'true');
-    }
-    if (wrapper) {
-        wrapper.innerHTML = '';
-    }
-    console.log("🔴 Player fechado");
 }
 
 // =====================================================

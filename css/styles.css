@@ -111,11 +111,11 @@ nav a:hover {
 
 /* ------------------ Filtros ------------------ */
 
-.search-box::placeholder {
+#searchBox::placeholder {
     color: #000;
 }
 
-.search-box {
+#searchBox {
     width: 100%;
     padding: 12px;
     background-color: #ecffe1;
@@ -127,7 +127,7 @@ nav a:hover {
     font-weight: 600;
 }
 
-.search-box:focus {
+#searchBox:focus {
     outline: none;
     border-color: #035;
 }
