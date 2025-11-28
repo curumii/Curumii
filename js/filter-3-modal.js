@@ -1,42 +1,126 @@
 // =====================================================
-// CONFIGURAÇÃO DE EVENTOS - DEVE SER CHAMADO PRIMEIRO!
+// CONSTANTES GLOBAIS E DADOS DE PERFIL (CORRIGIDO PARA O MESMO ÍCONE)
+// =====================================================
+
+const DEFAULT_PROFILE_ID = 'victoria';
+let currentProfileId = DEFAULT_PROFILE_ID; // Variável global para o perfil ativo
+
+// Caminho do ícone padrão que deve ser usado em todos os perfis
+const DEFAULT_AVATAR_PATH = 'imagens/curumii-icon.png';
+
+// Mapeamento de dados de perfil (simulação)
+const PROFILE_DATA = {
+    // TODOS OS PERFIS APONTAM AGORA PARA O MESMO CAMINHO DE IMAGEM
+    
+    // PERFIL CRIANÇA
+    'roberta': { 
+        nome: 'Roberta', 
+        role: 'child', 
+        placeholderName: 'Roberta Motta', 
+        placeholderAge: '12', 
+        img: DEFAULT_AVATAR_PATH // CHAVE CORRIGIDA
+    }, 
+    // PERFIL CRIANÇA (Padrão)
+    'victoria': { 
+        nome: 'Victória', 
+        role: 'child', 
+        placeholderName: 'Victória Motta', 
+        placeholderAge: '9', 
+        img: DEFAULT_AVATAR_PATH // CHAVE CORRIGIDA
+    },
+    // PERFIL RESPONSÁVEL
+    'yasmin': { 
+        nome: 'Yasmin', 
+        role: 'parent', 
+        placeholderName: 'Yasmin Oliveira', 
+        placeholderAge: '30', 
+        placeholderEmail: 'yasmin.m.oliveira@email.com',
+        img: DEFAULT_AVATAR_PATH // CHAVE CORRIGIDA
+    } 
+};
+
+// Obtém o parâmetro 'user' da URL
+function getUrlParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+// Carrega os dados básicos do perfil e atualiza a interface (apenas na página de perfil)
+function loadProfileDetails(profileId) {
+    const data = PROFILE_DATA[profileId];
+    if (!data) return;
+        
+    // 1. Atualiza h2, inputs e avatar
+    const nameEl = document.getElementById('currentProfileName');
+    if (nameEl) nameEl.textContent = data.nome;
+    
+    const avatarEl = document.getElementById('profileAvatar');
+    // Esta linha garantirá que o src seja o DEFAULT_AVATAR_PATH
+    if (avatarEl) avatarEl.src = data.img; 
+
+    const inputName = document.getElementById('cadastroNome');
+    if (inputName) inputName.placeholder = data.placeholderName;
+    
+    const inputAge = document.getElementById('cadastroIdade');
+    if (inputAge) inputAge.placeholder = data.placeholderAge;
+    
+    // 2. LÓGICA DE VISIBILIDADE DE CAMPOS 
+    const emailGroup = document.querySelector('.email-senha-group');
+    const relatorioContainer = document.getElementById('relatorioButtonContainer');
+    
+    if (data.role === 'parent') {
+        if (emailGroup) emailGroup.style.display = 'grid'; 
+        if (relatorioContainer) relatorioContainer.innerHTML = '';
+        
+        const inputEmail = document.getElementById('cadastroEmail');
+        if (inputEmail) inputEmail.placeholder = data.placeholderEmail;
+
+    } else {
+        if (emailGroup) emailGroup.style.display = 'none'; 
+        if (relatorioContainer) relatorioContainer.innerHTML = `<a href="relatorio.html?user=${profileId}" class="btn-relatorio-perfil btn-save">Ver Relatório</a>`;
+    }
+
+
+    // 3. Ativa a aba correta (CSS)
+    document.querySelectorAll('.perfil-abas a').forEach(a => {
+        const linkUserParam = new URLSearchParams(a.search).get('user');
+        
+        if (a.classList.contains('link-novo-perfil')) return; 
+
+        if (linkUserParam === profileId) {
+            a.classList.add('aba-ativa');
+        } else {
+            a.classList.remove('aba-ativa');
+        }
+    });
+
+}
+
+
+// =====================================================
+// RESTANTE DO CÓDIGO (Mantido)
 // =====================================================
 function setupPlayerEventListeners() {
     console.log("🎯 Configurando event listeners do player...");
     
-    // 1. DELEGAÇÃO DE EVENTOS para cliques nos cards
+    // 1. DELEGAÇÃO DE EVENTOS para cliques nos cards (apenas se o container existir)
     const container = document.getElementById('itemsContainer');
     if (container) {
-        // Adiciona listener usando delegação
         container.addEventListener('click', function(e) {
-            console.log("👆 Clique detectado!", e.target);
-            
-            // Procura o card clicado
             const card = e.target.closest('.item-card');
-            
             if (card) {
-                e.preventDefault(); // ESSENCIAL: Impede o comportamento padrão do link/onclick
+                e.preventDefault(); 
                 e.stopPropagation();
-                
-                // ⚠️ CORREÇÃO CRÍTICA: Pega a URL do novo atributo data-url
                 const url = card.getAttribute('data-url');
-                console.log("🎬 Card encontrado! URL:", url);
                 handleCardClick(url);
-            } else {
-                console.log("⚠️ Clique fora do card");
             }
-        }, true); // IMPORTANTE: use capture phase
-        
-        console.log("✅ Event listener do container configurado");
-    } else {
-        console.error("❌ Container não encontrado!");
-    }
+        }, true);
+    } 
 
     // 2. Botão de fechar player
     const btnClose = document.getElementById('closePlayer');
     if (btnClose) {
         btnClose.addEventListener('click', closeVideoPlayer);
-        console.log("✅ Botão fechar configurado");
     }
     
     // 3. Fechar ao clicar no fundo escuro
@@ -45,43 +129,41 @@ function setupPlayerEventListeners() {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeVideoPlayer();
         });
-        console.log("✅ Modal backdrop configurado");
     }
     
-    // 4. Event listeners dos filtros
+    // 4. Event listeners dos filtros (Aplicáveis apenas se o elemento existir)
     ['filterDuracao', 'filterIdade', 'filterLuz', 'filterPlataforma'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('change', applyFilters);
     });
     
-    // ⚠️ CORREÇÃO: Usando o ID real da barra de busca
+    // Barra de busca
     const searchBox = document.getElementById('searchBox'); 
     if (searchBox) {
         searchBox.addEventListener('input', applyFilters);
-        console.log("✅ Barra de busca configurada");
-    } else {
-        console.error("❌ Barra de busca não encontrada! ID esperado: 'searchBox'");
     }
     
-    console.log("✅ Todos os event listeners configurados!");
+    // Botões de Ação do Perfil
+    const btnSave = document.getElementById('atualizarPerfilBtn');
+    if (btnSave) {
+        btnSave.addEventListener('click', saveFilters); 
+    }
+    
+    // Botão Limpar Filtros
+    const btnClear = document.querySelector('.btn-clear');
+    if (btnClear) {
+        btnClear.addEventListener('click', clearFilters);
+    }
 }
 
 function handleCardClick(url) {
-    if (!url) {
-        console.warn("⚠️ URL vazia ou inválida");
-        return;
-    }
+    if (!url) return;
     
-    console.log("🔍 Analisando URL:", url);
-    
-    // Detecta se é YouTube
     const isYouTube = /(?:youtube\.com|youtu\.be)/i.test(url);
     
     if (isYouTube) {
-        console.log("✅ É um vídeo do YouTube! Abrindo player...");
         openVideoPlayer(url);
     } else {
-        console.log("🔗 Não é YouTube, abrindo em nova aba");
         window.open(url, '_blank');
     }
 }
@@ -90,41 +172,24 @@ function openVideoPlayer(url) {
     const modal = document.getElementById('videoModal');
     const wrapper = document.getElementById('playerWrapper');
 
-    if (!modal || !wrapper) {
-        console.error("❌ Modal ou Wrapper não encontrados!");
-        return;
-    }
+    if (!modal || !wrapper) return;
 
-    // REGEX ATUALIZADA - Remove tudo após ? ou & para pegar só o ID
     let videoId = '';
-    
-    // Formato youtu.be/VIDEO_ID (ignora ?si= e outros parâmetros)
     const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-    
-    // Formato youtube.com/watch?v=VIDEO_ID
     const longMatch = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
-    
-    // Formato youtube.com/embed/VIDEO_ID
     const embedMatch = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
     
     if (shortMatch) {
-        videoId = shortMatch[1].split('?')[0].split('&')[0]; // Remove parâmetros extras
-        console.log("📹 ID extraído (youtu.be):", videoId);
+        videoId = shortMatch[1].split('?')[0].split('&')[0];
     } else if (longMatch) {
-        videoId = longMatch[1].split('&')[0]; // Remove parâmetros extras
-        console.log("📹 ID extraído (youtube.com/watch):", videoId);
+        videoId = longMatch[1].split('&')[0];
     } else if (embedMatch) {
-        videoId = embedMatch[1].split('?')[0]; // Remove parâmetros extras
-        console.log("📹 ID extraído (youtube.com/embed):", videoId);
+        videoId = embedMatch[1].split('?')[0];
     } else {
-        console.error("❌ Não foi possível extrair o ID do vídeo da URL:", url);
         alert("Erro ao carregar vídeo. URL inválida.");
         return;
     }
 
-    console.log("🎯 ID final limpo:", videoId);
-
-    // URL de embed LIMPA, sem parâmetros extras que causam erro 153
     wrapper.innerHTML = `
         <iframe 
             width="100%" 
@@ -140,7 +205,6 @@ function openVideoPlayer(url) {
 
     modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
-    console.log("✅ Player aberto com ID:", videoId);
 }
 
 function closeVideoPlayer() {
@@ -151,22 +215,78 @@ function closeVideoPlayer() {
         modal.style.display = 'none';
         modal.setAttribute('aria-hidden', 'true');
     }
-    // Limpa o HTML para parar o vídeo imediatamente
     if (wrapper) {
         wrapper.innerHTML = '';
     }
-    console.log("🔴 Player fechado");
 }
 // =====================================================
-// CÓDIGO COMPLETO PARA SUBSTITUIR O filter.js
+// FUNÇÕES DE SALVAMENTO (LocalStorage)
+// =====================================================
+
+// Salva o estado atual dos filtros no LocalStorage para o perfil ativo
+function saveProfileFilters() {
+    const filters = {
+        duracao: document.getElementById('filterDuracao')?.value || '',
+        genero: selectedGeneros, 
+        idade: document.getElementById('filterIdade')?.value || '',
+        plataforma: document.getElementById('filterPlataforma')?.value || '',
+        luz: document.getElementById('filterLuz')?.value || ''
+    };
+    
+    // Chave única por perfil
+    localStorage.setItem(`curumii_saved_filters_${currentProfileId}`, JSON.stringify(filters));
+    console.log(`✅ Filtros salvos para o perfil: ${currentProfileId}.`);
+}
+
+// Carrega os filtros salvos do LocalStorage e aplica aos elementos
+function loadProfileFilters() {
+    const savedFiltersJSON = localStorage.getItem(`curumii_saved_filters_${currentProfileId}`);
+    if (!savedFiltersJSON) {
+        return; 
+    }
+    
+    try {
+        const filters = JSON.parse(savedFiltersJSON);
+        
+        // 1. Aplica Duração, Idade, Plataforma, Luz
+        if (document.getElementById('filterDuracao')) document.getElementById('filterDuracao').value = filters.duracao || '';
+        if (document.getElementById('filterIdade')) document.getElementById('filterIdade').value = filters.idade || '';
+        if (document.getElementById('filterPlataforma')) document.getElementById('filterPlataforma').value = filters.plataforma || '';
+        if (document.getElementById('filterLuz')) document.getElementById('filterLuz').value = filters.luz || '';
+        
+        // 2. Aplica Gêneros
+        if (filters.genero && filters.genero.length > 0) {
+            selectedGeneros = filters.genero;
+            
+            const checkboxes = document.querySelectorAll('#generoDropdown input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = filters.genero.includes(checkbox.value);
+            });
+            
+            // Atualiza o label do dropdown
+            const label = document.getElementById('generoLabel');
+            if (label) {
+                 label.textContent = (filters.genero.length > 1) 
+                    ? `${filters.genero.length} gêneros selecionados` 
+                    : filters.genero[0];
+            }
+        }
+        
+    } catch (e) {
+        console.error("❌ Erro ao carregar filtros do LocalStorage:", e);
+    }
+}
+
+// =====================================================
+// FUNÇÕES PRINCIPAIS (Dados, Filtros, Renderização)
 // =====================================================
 
 let allData = [];
 let filteredData = [];
 let selectedGeneros = [];
 
-let itemsToShow = 4; // Quantos vídeos mostrar no início
-const itemsPerLoad = 4; // Quantos vídeos mostrar cada vez que clicar em "Ver Mais"
+let itemsToShow = 4;
+const itemsPerLoad = 4;
 
 const USE_ONLINE = false;
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT0var1VwvNMPs4QRTB5Al3f8hjzrp5BQ2WLY17GoblJSCiOadsdvb8wZoiCviFFxgUFvO243zg8DIs/pub?gid=0&single=true&output=csv';
@@ -187,13 +307,34 @@ Pocoyo - Quem é a Bea?,imagens/T11-quem-e-a-bea.png,A Bea chegou! O Pocoyo não
 O Show da Luna - O Amarelo que ficou Verde,imagens/T13-amarelo-que-ficou-verde.png,"O Show da Luna! é um desenho brasileiro de uma menina de 6 anos totalmente apaixonada por ciências! Para Luna, o planeta Terra é um laboratório gigante. A cada episódio, uma curiosidade é abordada, seja no quintal de casa ou em uma estação espacial, Luna, seu irmão mais novo, Júpiter, e o furão de estimação da família, Cláudio, praticam ciência diariamente, formulando hipóteses e fazendo experimentos. Criativa, curiosa e destemida, Luna utiliza sua imaginação para descobrir suas diversas dúvidas.",https://youtu.be/kdlCkpoS7lc?si=-LaGaF_aSrxrrMFS,00:12:00,Educativo,Livre,Não,YouTube
 Lazy Town - Bem-Vindos a Lazy-Town!,imagens/T14-lazy-town.png,"Neste episódio de estreia, a personagem Stephanie chega à cidade de LazyTown para passar o verão com seu tio, o prefeito Milford Meanswell. Ela logo percebe que as crianças da cidade são extremamente preguiçosas, passando o tempo todo comendo doces e jogando videogame, sem brincar ao ar livre.",https://youtu.be/Puh8Ok8XCVA?si=_puAQbRYunj98Y0z,00:24:42,Educativo,10,Sim,YouTube
 Tom e Jerry - Um Pouco de Ar Fresco,imagens/T15-tom-e-jerry.png,Tom e Jerry dão mais certo ao ar livre e mal podem esperar por um tempo bom! Aproveite esta compilação com os melhores momentos ao ar livre!,https://youtu.be/0S0L-iqUM-4?si=wEiHEhOcq3Q3hEb2,00:21:19,Aventura,Livre,Não,YouTube
-Irmão do Jorel - Jardim da Pesada,imagens/T16-irmao-do-jorel,Irmão do Jorel tenta acabar com uma rivalidade entre frutas e legumes através de uma batalha de rap com o Tomate.,https://youtu.be/RPf8cYrA9wQ?si=ypzC_rgKqBZT0a_E,00:11:13,Fantasia,10,Não,YouTube
-Os 7 Monstrinhos - Uma Paixão,imagens/T17-os-7-monstrinhos,"A premissa central é a vida cotidiana dessa família incomum. Cada um dos sete monstrinhos é nomeado de acordo com um número (Um a Sete) e possui características físicas e de personalidade distintas e exageradas. Eles enfrentam os desafios típicos da infância e da convivência familiar, como rivalidades entre irmãos, medos, descobertas e a necessidade de aprender a trabalhar juntos, apesar de suas diferenças.",https://youtu.be/UmvvCL4MnFU?si=ZE33CWxJjULoiMiP,00:24:46,Aventura,10,Não,YouTube
+Irmão do Jorel - Jardim da Pesada,imagens/T16-irmao-do-jorel.png,Irmão do Jorel tenta acabar com uma rivalidade entre frutas e legumes através de uma batalha de rap com o Tomate.,https://youtu.be/RPf8cYrA9wQ?si=ypzC_rgKqBZT0a_E,00:11:13,Fantasia,10,Não,YouTube
+Os 7 Monstrinhos - Uma Paixão,imagens/T17-os-7-monstrinhos.png,"A premissa central é a vida cotidiana dessa família incomum. Cada um dos sete monstrinhos é nomeado de acordo com um número (Um a Sete) e possui características físicas e de personalidade distintas e exageradas. Eles enfrentam os desafios típicos da infância e da convivência familiar, como rivalidades entre irmãos, medos, descobertas e a necessidade de aprender a trabalhar juntos, apesar de suas diferenças.",https://youtu.be/UmvvCL4MnFU?si=ZE33CWXJjULoiMiP,00:24:46,Aventura,10,Não,YouTube
 A Turma do Charlie Brown e Snoopy - o Gigante,imagens/T18-snoopy.png,"""A Turma do Charlie Brown"" gira em torno das experiências diárias e reflexões de um grupo de crianças, liderado pelo melancólico e azarado Charlie Brown, e seu cão beagle, Snoopy.",https://youtu.be/lhYh98y1QHo?si=GaYftFellFkRN9Wz,00:21:21,Aventura,Livre,Não,YouTube
-Pica-Pau - Trocando de Corpos,imagens/T19-pica-pau,Leôncio fica chateado após Pica-Pau fazer uma visita inesperada para ele.,https://youtu.be/6ql_yOx0je8?si=-CinRT3omNgRkzM0,00:20:54,Aventura,12,Não,YouTube`;
-// =====================================================
-// FUNÇÃO PARA ATUALIZAR AS TAGS SELECIONADAS
-// =====================================================
+Pica-Pau - Trocando de Corpos,imagens/T19-pica-pau.png,Leôncio fica chateado após Pica-Pau fazer uma visita inesperada para ele.,https://youtu.be/6ql_yOx0je8?si=-CinRT3omNgRkzM0,00:20:54,Aventura,12,Não,YouTube`;
+
+function loadData() {
+    try {
+        let csvText = USE_ONLINE ? fetch(SHEET_URL).then(res => res.text()) : INLINE_CSV;
+        
+        Promise.resolve(csvText).then(text => {
+            Papa.parse(text, {
+                header: true,
+                complete: function(results) {
+                    allData = results.data.filter(row => row.Título && row.Título.trim() !== '');
+                    initializeFilters();
+                },
+                error: function(error) {
+                    console.error('Erro ao processar CSV:', error);
+                }
+            });
+        });
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+    }
+}
+
+// Função para atualizar as tags de filtros selecionados dinamicamente
 function updateSelectedFilters() {
     const container = document.querySelector('.selected-filters ul');
     
@@ -203,8 +344,8 @@ function updateSelectedFilters() {
     
     const filters = {};
     
-    // DURAÇÃO
-    const duracao = document.getElementById('filterDuracao').value;
+    // 1. DURAÇÃO
+    const duracao = document.getElementById('filterDuracao')?.value;
     if (duracao) {
         const duracaoTexto = {
             'curta': 'menos de 30min',
@@ -214,25 +355,25 @@ function updateSelectedFilters() {
         filters.duracao = duracaoTexto[duracao];
     }
     
-    // GÊNERO
+    // 2. GÊNERO
     if (selectedGeneros.length > 0) {
         filters.genero = selectedGeneros.join(', ');
     }
     
-    // IDADE
-    const idade = document.getElementById('filterIdade').value;
+    // 3. IDADE
+    const idade = document.getElementById('filterIdade')?.value;
     if (idade) {
         filters.idade = idade === 'Livre' ? 'Livre' : idade + ' anos';
     }
     
-    // PLATAFORMA
-    const plataforma = document.getElementById('filterPlataforma').value;
+    // 4. PLATAFORMA
+    const plataforma = document.getElementById('filterPlataforma')?.value;
     if (plataforma) {
         filters.plataforma = plataforma;
     }
     
-    // SENSIBILIDADE À LUZ
-    const luz = document.getElementById('filterLuz').value;
+    // 5. SENSIBILIDADE À LUZ
+    const luz = document.getElementById('filterLuz')?.value;
     if (luz) {
         filters.luz = luz;
     }
@@ -264,64 +405,10 @@ function updateSelectedFilters() {
     }
 }
 
-// =====================================================
-// FUNÇÕES DE CARREGAMENTO DE DADOS
-// =====================================================
-async function loadData() {
-    try {
-        let csvText;
-        
-        if (USE_ONLINE) {
-            console.log('🌐 Carregando do Google Sheets...');
-            const response = await fetch(SHEET_URL);
-            if (!response.ok) throw new Error('Erro ao acessar Google Sheets');
-            csvText = await response.text();
-        } else {
-            console.log('📝 Usando CSV embutido no código');
-            csvText = INLINE_CSV;
-        }
-        
-        processCSV(csvText);
-        
-    } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        showError(error.message);
-    }
-}
 
-function processCSV(csvText) {
-    Papa.parse(csvText, {
-        header: true,
-        complete: function(results) {
-            allData = results.data.filter(row => row.Título && row.Título.trim() !== '');
-            console.log('Dados carregados com sucesso:', allData.length, 'itens');
-            initializeFilters();
-            applyFilters();
-            // É crucial chamar setupPlayerEventListeners APÓS o DOM estar carregado
-            // Mas ele será chamado no final do script
-        },
-        error: function(error) {
-            console.error('Erro ao processar CSV:', error);
-            showError('Erro ao processar o arquivo CSV');
-        }
-    });
-}
-
-function showError(message) {
-    document.getElementById('loading').innerHTML = 
-        `<div style="color: white; background: rgba(255,0,0,0.2); padding: 20px; border-radius: 10px;">
-            <strong>⚠️ Erro ao carregar os dados</strong><br><br>
-            ${message}<br><br>
-            <em>Modo atual: ${USE_ONLINE ? 'Online (Google Sheets)' : 'Local (CSV inline)'}</em>
-        </div>`;
-}
-
-// =====================================================
-// FUNÇÕES DE FILTRO
-// =====================================================
 function toggleGeneroDropdown() {
     const dropdown = document.getElementById('generoDropdown');
-    dropdown.classList.toggle('show');
+    if (dropdown) dropdown.classList.toggle('show');
 }
 
 function updateGeneroFilter(isTodos = false) {
@@ -333,7 +420,8 @@ function updateGeneroFilter(isTodos = false) {
             }
         });
     } else {
-        document.getElementById('genero-todos').checked = false;
+        const todosCheckbox = document.getElementById('genero-todos');
+        if (todosCheckbox) todosCheckbox.checked = false;
     }
 
     selectedGeneros = [];
@@ -346,12 +434,14 @@ function updateGeneroFilter(isTodos = false) {
     });
 
     const label = document.getElementById('generoLabel');
-    if (selectedGeneros.length === 0) {
-        label.textContent = 'Todos os Gêneros';
-    } else if (selectedGeneros.length === 1) {
-        label.textContent = selectedGeneros[0];
-    } else {
-        label.textContent = `${selectedGeneros.length} gêneros selecionados`;
+    if (label) {
+        if (selectedGeneros.length === 0) {
+            label.textContent = 'Todos os Gêneros';
+        } else if (selectedGeneros.length === 1) {
+            label.textContent = selectedGeneros[0];
+        } else {
+            label.textContent = `${selectedGeneros.length} gêneros selecionados`;
+        }
     }
 
     applyFilters();
@@ -406,18 +496,39 @@ function checkAgeFilter(contentAge, filterAge) {
 }
 
 function initializeFilters() {
-    document.getElementById('loading').style.display = 'none';
-    updateSelectedFilters(); // Atualiza as tags ao inicializar
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) loadingEl.style.display = 'none';
+
+    // 1. OBTÉM O PERFIL ATIVO DA URL (se estiver na página de perfil)
+    const urlUser = getUrlParam('user');
+    
+    if (urlUser && PROFILE_DATA[urlUser]) {
+        currentProfileId = urlUser;
+    } else {
+        // Se não houver parâmetro na URL (ex: na página principal), usa o default
+        currentProfileId = DEFAULT_PROFILE_ID;
+    }
+    
+    // 2. CARREGA DADOS BÁSICOS DO PERFIL (apenas se estiver na página de perfil)
+    if (document.querySelector('.perfil-abas')) {
+        loadProfileDetails(currentProfileId);
+    }
+    
+    // 3. Carrega os filtros salvos (se houver)
+    loadProfileFilters(); 
+    
+    // 4. Aplica os filtros e atualiza as tags visuais com o estado carregado
+    applyFilters(); 
 }
 
 function applyFilters() {
-    itemsToShow = 6; // Reseta para mostrar só 6 quando filtrar
+    itemsToShow = 6;
     const searchBox = document.getElementById('searchBox');
     const searchTerm = searchBox ? searchBox.value.toLowerCase() : '';
-    const duracao = document.getElementById('filterDuracao').value;
-    const idade = document.getElementById('filterIdade').value;
-    const luz = document.getElementById('filterLuz').value;
-    const plataforma = document.getElementById('filterPlataforma').value;
+    const duracao = document.getElementById('filterDuracao')?.value;
+    const idade = document.getElementById('filterIdade')?.value;
+    const luz = document.getElementById('filterLuz')?.value;
+    const plataforma = document.getElementById('filterPlataforma')?.value;
 
     // ATUALIZA AS TAGS VISUAIS
     updateSelectedFilters();
@@ -448,54 +559,54 @@ function renderItems(hasActiveFilters) {
     if (info) {
         if (hasActiveFilters) {
             info.textContent = `Mostrando ${Math.min(itemsToShow, filteredData.length)} de ${filteredData.length} itens`;
+            info.style.display = 'block';
         } else {
             info.textContent = `Mostrando ${Math.min(itemsToShow, filteredData.length)} de ${filteredData.length} conteúdos em destaque`;
+            info.style.display = 'block'; 
         }
     }
 
     if (filteredData.length === 0) {
-        container.innerHTML = '<div class="no-results">Nenhum item encontrado com os filtros selecionados.</div>';
+        if (container) container.innerHTML = '<div class="no-results">Nenhum item encontrado com os filtros selecionados.</div>';
         return;
     }
 
-    // Mostra apenas os primeiros itemsToShow itens
     const itemsToDisplay = filteredData.slice(0, itemsToShow);
     
-    // ⚠️ CORREÇÃO CRÍTICA APLICADA AQUI: Removido o onclick inline.
-    // O clique agora é tratado exclusivamente pelo event listener delegado.
-    container.innerHTML = itemsToDisplay.map(item => `
-        <div class="item-card" data-url="${item.URL}">
-            <img src="${item.Imagem || 'https://via.placeholder.com/400x200?text=Sem+Imagem'}" 
-                 alt="${item.Título}" 
-                 class="item-image"
-                 onerror="this.src='https://via.placeholder.com/400x200?text=Imagem+Indisponível'">
-            <div class="item-content">
-                <div class="item-title">${item.Título}</div>
-                <div class="item-description">${item.Resumo}</div>
-                <div class="item-tags">
-                    <span class="tag genero">${item.Genero}</span>
-                    <span class="tag idade">${item.Idade === 'Livre' ? 'Livre' : item.Idade + ' anos'}</span>
-                    <span class="tag duracao">${formatDuration(item.Duração)}</span>
-                    <span class="tag plataforma">${item.Plataforma}</span>
-                    ${item['Sensibilidade Luz'] === 'Sim' ? '<span class="tag luz">Sensibilidade à Luz</span>' : ''}
+    // Apenas renderiza se o container existir (evita erro no Perfil)
+    if (container) { 
+        container.innerHTML = itemsToDisplay.map(item => `
+            <div class="item-card" data-url="${item.URL}">
+                <img src="${item.Imagem || 'https://via.placeholder.com/400x200?text=Sem+Imagem'}" 
+                     alt="${item.Título}" 
+                     class="item-image"
+                     onerror="this.src='https://via.placeholder.com/400x200?text=Imagem+Indisponível'">
+                <div class="item-content">
+                    <div class="item-title">${item.Título}</div>
+                    <div class="item-description">${item.Resumo}</div>
+                    <div class="item-tags">
+                        <span class="tag genero">${item.Genero}</span>
+                        <span class="tag idade">${item.Idade === 'Livre' ? 'Livre' : item.Idade + ' anos'}</span>
+                        <span class="tag duracao">${formatDuration(item.Duração)}</span>
+                        <span class="tag plataforma">${item.Plataforma}</span>
+                        ${item['Sensibilidade Luz'] === 'Sim' ? '<span class="tag luz">Sensibilidade à Luz</span>' : ''}
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
 
-    // Adiciona o botão "Ver Mais" se houver mais itens para mostrar
     showLoadMoreButton();
 }
 
 function showLoadMoreButton() {
     const container = document.getElementById('itemsContainer');
-    // Remove o botão anterior, se existir
     let existingButton = document.getElementById('loadMoreButton');
     if (existingButton) {
         existingButton.remove();
     }
 
-    if (filteredData.length > itemsToShow) {
+    if (container && filteredData.length > itemsToShow) {
         const button = document.createElement('button');
         button.id = 'loadMoreButton';
         button.className = 'btn-load-more';
@@ -510,28 +621,42 @@ function clearFilters() {
     const searchBox = document.getElementById('searchBox');
     if (searchBox) searchBox.value = '';
     
-    document.getElementById('filterDuracao').value = '';
-    document.getElementById('filterIdade').value = '';
-    document.getElementById('filterLuz').value = '';
-    document.getElementById('filterPlataforma').value = '';
+    const filterDuracao = document.getElementById('filterDuracao');
+    if (filterDuracao) filterDuracao.value = '';
+    
+    const filterIdade = document.getElementById('filterIdade');
+    if (filterIdade) filterIdade.value = '';
+    
+    const filterLuz = document.getElementById('filterLuz');
+    if (filterLuz) filterLuz.value = '';
+    
+    const filterPlataforma = document.getElementById('filterPlataforma');
+    if (filterPlataforma) filterPlataforma.value = '';
     
     const checkboxes = document.querySelectorAll('#generoDropdown input[type="checkbox"]');
     checkboxes.forEach(checkbox => checkbox.checked = false);
     selectedGeneros = [];
-    document.getElementById('generoLabel').textContent = 'Todos os Gêneros';
+    
+    const generoLabel = document.getElementById('generoLabel');
+    if (generoLabel) generoLabel.textContent = 'Todos os Gêneros';
+    
+    // Limpa o LocalStorage para o perfil ativo
+    localStorage.removeItem(`curumii_saved_filters_${currentProfileId}`);
     
     applyFilters();
 }
 
 function saveFilters() {
-    alert('Funcionalidade de salvar opções será implementada - redirecionará para página de cadastro');
+    saveProfileFilters(); 
+    
+    const modal = document.getElementById('meuModal');
+    if (modal) modal.style.display = 'flex';
 }
 
 function loadMoreItems() {
     itemsToShow += itemsPerLoad;
     renderItems(true);
     
-    // Rola suavemente para os novos itens
     setTimeout(() => {
         const cards = document.querySelectorAll('.item-card');
         if (cards.length > itemsPerLoad) {
@@ -545,15 +670,13 @@ function loadMoreItems() {
 
 
 // =====================================================
-// EVENT LISTENERS
+// Inicialização
 // =====================================================
-// Removi a re-declaração dos listeners que já estão em setupPlayerEventListeners
-// e adicionei a chamada principal
-
-// 1. Configura os Listeners do Modal/Filtro (incluindo a barra de busca)
 setupPlayerEventListeners();
-
-// 2. Carregar dados ao iniciar
 loadData();
 
-// Nota: A função showLoadMoreButton também foi adicionada para garantir que o botão "Ver Mais" seja recriado corretamente a cada renderização.
+// Coloca a função no escopo global para o HTML
+window.toggleGeneroDropdown = toggleGeneroDropdown;
+window.updateGeneroFilter = updateGeneroFilter;
+window.clearFilters = clearFilters;
+window.saveFilters = saveFilters;

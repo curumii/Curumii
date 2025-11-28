@@ -1,23 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curumii - Curadoria de Conteúdos Infantis</title>
+    <title>Curumii - Meu Curumii</title>
     <link rel="icon" type="image/png" href="imagens/curumii-icon.png">
     
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     
     <link rel="stylesheet" type="text/css" href="css/modal.css">
-</head>
 
-<style>
-    .filters {
-      display: none;
-    }
-</style> 
+    <style>
+        .filters {
+          display: none; /* Esconde todo o bloco de filtros no meu-curumii.html */
+        }
+        
+        /* Apenas a seção de filtros selecionados será visível */
+        .meu-curumii-filtros-selecionados {
+            background: #292d46;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
 
+        .meu-curumii-filtros-selecionados h3 {
+            color: #c4f3a9;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        /* Ajuste para alinhar as tags carregadas */
+        .meu-curumii-filtros-selecionados .selected-filters ul {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 10px;
+        }
+    </style> 
 </head>
 <body>
     <div class="container">
@@ -25,7 +46,7 @@
         <nav>
             <ul>
                 <li><a class="ativo" href="meu-curumii.html">Meu Curumii</a></li>
-                <li><a href="perfil.html">Perfil</a></li>
+                <li><a href="perfil-2.html">Perfil</a></li>
                 <li><a href="relatorio.html">Relatório</a></li>
                 <li><a href="index.html">Sair</a></li>
             </ul>
@@ -37,23 +58,21 @@
             <h2 class="page-title">Meu Curumii</h2>
         </div>
 
-        <div class="selected-filters">
-            <ul>
-                <li class="tag duracao">Duração: menos de 30min</li>
-                <li class="tag genero">Gênero: Aventura, Fantasia</li>
-                <li class="tag idade">Idade: Livre</li>
-                <li class="tag plataforma">Plataformas: Todas</li>
-                <li class="tag luz">Sensibilidade à Luz: Sim</li>
-                <li><a class="link-editar-filtros" href="perfil.html">Editar Filtros</a></li>
-            </ul>
-            <br>
+        <div class="meu-curumii-filtros-selecionados">
+            <h3>Filtros</h3>
+            <div class="selected-filters">
+                <ul>
+                    <li style="color: #999; font-style: italic; list-style: none;">Carregando filtros...</li>
+                </ul>
+            </div>
+            <a href="perfil-2.html" class="link-editar-filtros">Editar ou Limpar Filtros</a>
         </div>
 
+
         <div class="filters">
-            <h2>Vamos filtrar seu conteúdo</h2>
-            <p class="instrucao">Me conte o que você quer assistir:</p>
-            
-            <input type="text" class="search-box" id="searchBox" placeholder="Pesquisar por título ou descrição...">
+            <div class="main-filter-section"> 
+                <input type="text"  id="searchBox" placeholder="Pesquisar por título ou descrição...">
+            </div>
             
             <div class="filter-group">
                 <div class="filter-item">
@@ -115,15 +134,6 @@
                 </div>
 
                 <div class="filter-item">
-                    <label for="filterLuz">Sensibilidade à Luz</label>
-                    <select id="filterLuz">
-                        <option value="">Todas</option>
-                        <option value="Sim">Sim</option>
-                        <option value="Não">Não</option>
-                    </select>
-                </div>
-
-                <div class="filter-item">
                     <label for="filterPlataforma">Plataforma</label>
                     <select id="filterPlataforma">
                         <option value="">Todas</option>
@@ -136,25 +146,33 @@
                         <option value="YouTube">YouTube</option>
                     </select>
                 </div>
+
+                <div class="filter-item">
+                    <label for="filterLuz">Sensibilidade à Luz</label>
+                    <select id="filterLuz">
+                        <option value="">Todas</option>
+                        <option value="Sim">Sim</option>
+                        <option value="Não">Não</option>
+                    </select>
+                </div>
             </div>
-
-            <button class="btn-clear" onclick="clearFilters()">Limpar Filtros</button>
-            <button class="btn-save" onclick="saveFilters()">Salvar minhas opções</button>
+            
+            <div class="selected-filters" style="display:none;"><ul></ul></div>
+            <button class="btn-clear">Limpar Filtros</button>
         </div>
-
+        
         <div class="results-info" id="resultsInfo"></div>
-
         <div id="loading" class="loading">Carregando dados...</div>
         <div id="itemsContainer" class="items-grid"></div>
-    </div>
-   
-    <div id="videoModal" class="modal" aria-hidden="true">
-    <div class="modal-conteudo-video">
-        <button id="closePlayer" class="close-player" aria-label="Fechar">✕</button>
         
-        <div id="playerWrapper"></div>
     </div>
-</div>
+
+       <div id="videoModal" class="modal" aria-hidden="true">
+            <div class="modal-conteudo-video">
+                <button id="closePlayer" class="close-player" aria-label="Fechar">✕</button>
+                <div id="playerWrapper"></div>
+            </div>
+        </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="js/filter-3-modal.js"></script>

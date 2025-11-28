@@ -15,7 +15,7 @@
         <nav>
             <ul>
                 <li><a href="meu-curumii.html">Meu Curumii</a></li>
-                <li><a class="ativo" href="perfil.html">Perfil</a></li>
+                <li><a class="ativo" href="perfil-2.html">Perfil</a></li>
                 <li><a href="relatorio.html">Relatório</a></li>
                 <li><a href="index.html">Sair</a></li>
             </ul>
@@ -24,18 +24,22 @@
         <div class="header">
            <div class="img-logo-home"><img src="imagens/logo_anima.gif"></div>
             <h1 class="site-subtitle">Curadoria de Conteúdos Infantis</h1>
-            <h2 class="page-title">Perfil</h2>
+            <h2 class="page-title">Perfis</h2>
         </div>
         
         <div class="perfil-abas">
-            <span>Perfil 1</span> . <span>Perfil 1</span> . <span>Perfil 1</span>  . <span>Criar novo Perfil</span>
+            <a href="perfil-2.html?user=roberta">Roberta</a>
+            <a href="perfil-2.html?user=victoria" class="aba-ativa">Victória</a>
+            <a href="perfil-2.html?user=yasmin">Yasmin</a>
+            
+            <a href="cadastro.html" class="link-novo-perfil">Criar novo Perfil</a>
         </div>
 
         <div class="cadastro">
-            <h2>Perfil 1</h2><br>
+            <h2 id="currentProfileName">Victória</h2><br> 
             <h2>Suas informações pessoais:</h2><br>
                 <div class="cadastro-avatar">
-                    <img src="imagens/curumii-icon.png">    
+                    <img id="profileAvatar" src="imagens/curumii-icon.png">    
                 </div>
 
                 <div class="cadastro-info-pessoal">
@@ -44,35 +48,14 @@
 
                             <div class="bloco-info">
                                 <label class="legenda">Nome e Sobrenome</label>
-                                <input type="text" class="form-cadastro form-nome" id="cadastroNome" placeholder="Nome">
+                                <input type="text" class="form-cadastro form-nome" id="cadastroNome" placeholder="Victória Motta">
                             </div>
                             
                             <div class="bloco-info">
                                 <label class="legenda">Idade</label>
-                                <input type="text" class="form-cadastro form-nome" id="cadastroNome" placeholder="Idade">
+                                <input type="number" class="form-cadastro form-nome" id="cadastroIdade" placeholder="9">
                             </div>
                     </div>
-
-                    <div class="email-senha-group">
-                          
-                            <div class="bloco-info">
-                                <label class="legenda">Email</label>
-                                <input type="text" class="form-cadastro form-nome" id="cadastroNome" placeholder="Email">
-                            </div>
-
-                            <div class="bloco-info">
-                                <label class="legenda">Senha</label>
-                                <input type="text" class="form-cadastro form-nome" id="cadastroNome" placeholder="Senha">
-                            </div>
-
-                             <div class="bloco-info">
-                                <label class="legenda">Confirmar senha</label>
-                                <input type="text" class="form-cadastro form-nome" id="cadastroNome" placeholder="Confirmar senha">
-                            </div>
-                    </div>
-
-                           
-
                 </div>
                 
         </div>
@@ -164,37 +147,30 @@
 
             <div class="selected-filters">
                 <ul>
-                    <li class="tag duracao">Duração: menos de 30min</li>
-                    <li class="tag genero">Gênero: Aventura, Fantasia</li>
-                    <li class="tag idade">Idade: Livre</li>
-                    <li class="tag plataforma">Plataformas: Todas</li>
-                    <li class="tag luz">Sensibilidade à Luz: Sim</li>
+                    <li style="color: #999; font-style: italic; list-style: none;">Carregando filtros...</li>
                 </ul>
             </div>
 
-            <button class="btn-clear" onclick="clearFilters()">Limpar Filtros</button>
+            <button class="btn-clear">Limpar Filtros</button>
             <br><br><br>
             <hr>
              <br><br><br>
-            <button class="btn-save" id="abrirModalBtn">Remover</button>
-            <button class="btn-save" id="abrirModalBtn">Atualizar</button>
+             <button class="btn-save" id="removerPerfilBtn">Remover</button>
+            <button class="btn-save" id="atualizarPerfilBtn">Atualizar</button>
 
             <div id="meuModal" class="modal">
                 <div class="modal-conteudo">
                     <h2 class="modal-titulo">🎉 Perfil atualizado com sucesso!</h2>
                     <a href="meu-curumii.html" class="btn-save">Ver Vídeos</a>
                     <a href="perfil-2.html" class="btn-save">Meus Perfis</a>
-                    <a href="perfil-2.html" class="btn-save">Novo Perfil</a>
                 </div>
             </div>
 
 
-
         </div>
-        <div id="itemsContainer" class="items-grid"></div>
-    </div>
+        </div>
 
-    <script src="js/filter.js"></script>
-    <script src="js/modal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="js/filter-3-modal.js"></script>
 </body>
-</html>
+</html>s
