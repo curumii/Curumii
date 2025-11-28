@@ -1,5 +1,5 @@
 // =====================================================
-// CONSTANTES GLOBAIS E DADOS DE PERFIL (CORRIGIDO PARA O MESMO ÍCONE)
+// CONSTANTES GLOBAIS E DADOS DE PERFIL 
 // =====================================================
 
 const DEFAULT_PROFILE_ID = 'victoria';
@@ -10,15 +10,13 @@ const DEFAULT_AVATAR_PATH = 'imagens/curumii-icon.png';
 
 // Mapeamento de dados de perfil (simulação)
 const PROFILE_DATA = {
-    // TODOS OS PERFIS APONTAM AGORA PARA O MESMO CAMINHO DE IMAGEM
-    
     // PERFIL CRIANÇA
     'roberta': { 
         nome: 'Roberta', 
         role: 'child', 
         placeholderName: 'Roberta Motta', 
         placeholderAge: '12', 
-        img: DEFAULT_AVATAR_PATH // CHAVE CORRIGIDA
+        img: DEFAULT_AVATAR_PATH 
     }, 
     // PERFIL CRIANÇA (Padrão)
     'victoria': { 
@@ -26,7 +24,7 @@ const PROFILE_DATA = {
         role: 'child', 
         placeholderName: 'Victória Motta', 
         placeholderAge: '9', 
-        img: DEFAULT_AVATAR_PATH // CHAVE CORRIGIDA
+        img: DEFAULT_AVATAR_PATH 
     },
     // PERFIL RESPONSÁVEL
     'yasmin': { 
@@ -35,7 +33,7 @@ const PROFILE_DATA = {
         placeholderName: 'Yasmin Oliveira', 
         placeholderAge: '30', 
         placeholderEmail: 'yasmin.m.oliveira@email.com',
-        img: DEFAULT_AVATAR_PATH // CHAVE CORRIGIDA
+        img: DEFAULT_AVATAR_PATH 
     } 
 };
 
@@ -55,7 +53,6 @@ function loadProfileDetails(profileId) {
     if (nameEl) nameEl.textContent = data.nome;
     
     const avatarEl = document.getElementById('profileAvatar');
-    // Esta linha garantirá que o src seja o DEFAULT_AVATAR_PATH
     if (avatarEl) avatarEl.src = data.img; 
 
     const inputName = document.getElementById('cadastroNome');
@@ -98,12 +95,11 @@ function loadProfileDetails(profileId) {
 
 
 // =====================================================
-// RESTANTE DO CÓDIGO (Mantido)
+// CONFIGURAÇÃO DE EVENTOS
 // =====================================================
 function setupPlayerEventListeners() {
     console.log("🎯 Configurando event listeners do player...");
     
-    // 1. DELEGAÇÃO DE EVENTOS para cliques nos cards (apenas se o container existir)
     const container = document.getElementById('itemsContainer');
     if (container) {
         container.addEventListener('click', function(e) {
@@ -117,13 +113,11 @@ function setupPlayerEventListeners() {
         }, true);
     } 
 
-    // 2. Botão de fechar player
     const btnClose = document.getElementById('closePlayer');
     if (btnClose) {
         btnClose.addEventListener('click', closeVideoPlayer);
     }
     
-    // 3. Fechar ao clicar no fundo escuro
     const modal = document.getElementById('videoModal');
     if (modal) {
         modal.addEventListener('click', (e) => {
@@ -131,25 +125,21 @@ function setupPlayerEventListeners() {
         });
     }
     
-    // 4. Event listeners dos filtros (Aplicáveis apenas se o elemento existir)
     ['filterDuracao', 'filterIdade', 'filterLuz', 'filterPlataforma'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('change', applyFilters);
     });
     
-    // Barra de busca
     const searchBox = document.getElementById('searchBox'); 
     if (searchBox) {
         searchBox.addEventListener('input', applyFilters);
     }
     
-    // Botões de Ação do Perfil
     const btnSave = document.getElementById('atualizarPerfilBtn');
     if (btnSave) {
         btnSave.addEventListener('click', saveFilters); 
     }
     
-    // Botão Limpar Filtros
     const btnClear = document.querySelector('.btn-clear');
     if (btnClear) {
         btnClear.addEventListener('click', clearFilters);
@@ -223,7 +213,6 @@ function closeVideoPlayer() {
 // FUNÇÕES DE SALVAMENTO (LocalStorage)
 // =====================================================
 
-// Salva o estado atual dos filtros no LocalStorage para o perfil ativo
 function saveProfileFilters() {
     const filters = {
         duracao: document.getElementById('filterDuracao')?.value || '',
@@ -233,12 +222,10 @@ function saveProfileFilters() {
         luz: document.getElementById('filterLuz')?.value || ''
     };
     
-    // Chave única por perfil
     localStorage.setItem(`curumii_saved_filters_${currentProfileId}`, JSON.stringify(filters));
     console.log(`✅ Filtros salvos para o perfil: ${currentProfileId}.`);
 }
 
-// Carrega os filtros salvos do LocalStorage e aplica aos elementos
 function loadProfileFilters() {
     const savedFiltersJSON = localStorage.getItem(`curumii_saved_filters_${currentProfileId}`);
     if (!savedFiltersJSON) {
@@ -248,13 +235,11 @@ function loadProfileFilters() {
     try {
         const filters = JSON.parse(savedFiltersJSON);
         
-        // 1. Aplica Duração, Idade, Plataforma, Luz
         if (document.getElementById('filterDuracao')) document.getElementById('filterDuracao').value = filters.duracao || '';
         if (document.getElementById('filterIdade')) document.getElementById('filterIdade').value = filters.idade || '';
         if (document.getElementById('filterPlataforma')) document.getElementById('filterPlataforma').value = filters.plataforma || '';
         if (document.getElementById('filterLuz')) document.getElementById('filterLuz').value = filters.luz || '';
         
-        // 2. Aplica Gêneros
         if (filters.genero && filters.genero.length > 0) {
             selectedGeneros = filters.genero;
             
@@ -263,7 +248,6 @@ function loadProfileFilters() {
                 checkbox.checked = filters.genero.includes(checkbox.value);
             });
             
-            // Atualiza o label do dropdown
             const label = document.getElementById('generoLabel');
             if (label) {
                  label.textContent = (filters.genero.length > 1) 
@@ -291,7 +275,7 @@ const itemsPerLoad = 4;
 const USE_ONLINE = false;
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT0var1VwvNMPs4QRTB5Al3f8hjzrp5BQ2WLY17GoblJSCiOadsdvb8wZoiCviFFxgUFvO243zg8DIs/pub?gid=0&single=true&output=csv';
 
-// Dados CSV
+// Dados CSV (Mantidos)
 const INLINE_CSV = `Título,Imagem,Resumo,URL,Duração,Genero,Idade,Sensibilidade Luz,Plataforma
 Pequenas histórias com Bluey,imagens/T02-pequenas-historias-bluey.png,"Este vídeo é uma coleção de quarenta pequenas histórias de Bluey, Bingo e a sua família. Testemunhe o caos criativo e as brincadeiras imaginativas que definem o dia a dia desta família, desde o Pai (Bandit) a tentar escapar de músicas infantis e a lidar com brinquedos novos, até uma hilariante recontagem moderna dos Três Porquinhos. Cada curta explora a forma única como Bluey e Bingo transformam situações quotidianas — como investigações de ""toques"" misteriosos ou a frustração do Pai com a desobediência — em aventuras memoráveis.",https://www.youtube.com/watch?v=5IRl-R73n3k&list=PLVkj_daPh17RO5CF23yT3S5MckpB2BbEJ,00:27:56,Arte,Livre,Não,YouTube
 Visitando o Vovô,imagens/T03-visitando-vovo.png,"Daniel Tigre e a sua família fazem uma viagem para visitar o Vovô Tigre. Embora Daniel ache divertido, ele repara que muitas coisas são diferentes da sua casa, como dormir num colchonete ou guardar a roupa numa mala. Para transformar a experiência numa aventura, o Vovô leva a família numa caça ao tesouro de barco até à Ilha do Tigre. A aventura ensina a Daniel que, mesmo quando se viaja e as coisas parecem diferentes, o amor e a diversão em família continuam iguais.",https://www.youtube.com/watch?v=cp0xmXc5nLM,00:11:35,Aventura,14,Não,YouTube
@@ -599,20 +583,35 @@ function renderItems(hasActiveFilters) {
     showLoadMoreButton();
 }
 
+// FUNÇÃO ATUALIZADA PARA ENVOLVER O BOTÃO EM UM WRAPPER CENTRALIZADO
 function showLoadMoreButton() {
     const container = document.getElementById('itemsContainer');
-    let existingButton = document.getElementById('loadMoreButton');
-    if (existingButton) {
-        existingButton.remove();
+    
+    // Remove o wrapper anterior, se existir
+    let existingWrapper = document.getElementById('loadMoreWrapper');
+    if (existingWrapper) {
+        existingWrapper.remove();
     }
 
     if (container && filteredData.length > itemsToShow) {
+        
+        // 1. Cria o botão
         const button = document.createElement('button');
         button.id = 'loadMoreButton';
         button.className = 'btn-load-more';
         button.textContent = 'Ver Mais Conteúdos';
         button.onclick = loadMoreItems;
-        container.parentNode.insertBefore(button, container.nextSibling); 
+        
+        // 2. Cria o wrapper/contêiner de centralização
+        const wrapper = document.createElement('div');
+        wrapper.id = 'loadMoreWrapper';
+        wrapper.className = 'load-more-wrapper';
+        
+        // 3. Adiciona o botão ao wrapper
+        wrapper.appendChild(button);
+        
+        // 4. Insere o wrapper (com o botão dentro) após o container de itens
+        container.parentNode.insertBefore(wrapper, container.nextSibling); 
     }
 }
 

@@ -620,13 +620,18 @@ a.link-entrar.btn-float {
    ESTILOS ADICIONAIS
    ===================================================== */
 
-.load-more-container {
-    text-align: center;
-    margin: 40px 0;
-    padding: 20px;
+/* Contêiner para centralizar o botão Ver Mais Conteúdos */
+.load-more-wrapper {
+    /* Essa regra centraliza o texto/elementos inline-block dentro da div */
+    text-align: center; 
+    margin: 40px auto; 
+    width: 100%;
 }
 
 .btn-load-more {
+    /* Garante que o botão seja exibido inline-block para responder ao text-align: center do wrapper */
+    display: inline-block; 
+    
     background: linear-gradient(135deg, #014a7a 0%, #7b9871 100%);
     color: white;
     border: none;
@@ -638,9 +643,6 @@ a.link-entrar.btn-float {
     font-weight: 700;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(196, 243, 169, 0.3);
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .btn-load-more:hover {
