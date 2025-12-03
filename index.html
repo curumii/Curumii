@@ -157,7 +157,6 @@
     <script>
     console.log("🔍 DIAGNÓSTICO DO SISTEMA:");
     
-    // Verifica se os elementos existem
     setTimeout(() => {
         const checks = {
             'Container de itens': document.getElementById('itemsContainer'),
@@ -172,12 +171,9 @@
             console.log(el ? `✅ ${name}: OK` : `❌ ${name}: NÃO ENCONTRADO`);
         });
         
-        // Testa se o clique está funcionando
         const container = document.getElementById('itemsContainer');
         if (container) {
             console.log("\n🎯 Testando event listener do container...");
-            // O listener agora é delegado e usa 'data-url' para funcionar corretamente
-            // A verificação abaixo é apenas indicativa
             console.log("✅ Listener será testado ao clicar em um card. Procure 'Clique detectado!' no console.");
         }
         

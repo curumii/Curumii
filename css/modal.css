@@ -1,6 +1,4 @@
-/* ============================================
-   MODAL BASE (compartilhado por ambos)
-   ============================================ */
+/* Modal de Base */
 .modal {
     display: none; 
     position: fixed; 
@@ -14,9 +12,7 @@
     align-items: center;
 }
 
-/* ============================================
-   MODAL PEQUENO (Cadastro/Perfil/Confirmações)
-   ============================================ */
+/* Modal Pequeno */
 .modal-conteudo {
     background-color: #1f2235;
     padding: 30px 50px 70px 50px;
@@ -36,21 +32,18 @@ a.btn-save {
     text-decoration: none;
 }
 
-/* ============================================
-   MODAL GRANDE (Player de Vídeo)
-   ============================================ */
+/* Modal do Player de Vídeo */
 .modal-conteudo-video {
     background-color: #1f2235;
     padding: 20px;
     border-radius: 10px;
     width: 90%;
-    max-width: 1200px; /* Muito maior que o modal pequeno */
+    max-width: 1200px; 
     position: relative;
     box-shadow: 0 0 50px rgba(196, 243, 169, 0.4);
     animation: fadeIn 0.3s;
 }
 
-/* Botão de fechar do player */
 .close-player {
     position: absolute;
     right: 18px;
@@ -75,11 +68,10 @@ a.btn-save {
     transform: rotate(90deg);
 }
 
-/* Container responsivo 16:9 para o player */
 #playerWrapper {
     position: relative;
     width: 100%;
-    padding-top: 56.25%; /* Proporção 16:9 */
+    padding-top: 56.25%; 
     height: 0;
     background: #000;
     border-radius: 8px;
@@ -96,9 +88,7 @@ a.btn-save {
     border-radius: 8px;
 }
 
-/* ============================================
-   ANIMAÇÃO
-   ============================================ */
+/* Animação do Modal */
 @keyframes fadeIn {
     from { 
         opacity: 0; 
@@ -110,9 +100,7 @@ a.btn-save {
     }
 }
 
-/* ============================================
-   RESPONSIVIDADE
-   ============================================ */
+/* Responsividade do Modal */
 @media (max-width: 768px) {
     .modal-conteudo {
         width: 95%;

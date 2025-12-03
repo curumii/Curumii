@@ -23,7 +23,7 @@ input, select, button, textarea {
     position: relative;
 }
 
-/* ------------------ Navegação ------------------ */
+/*Navegação */
 
 nav {
     margin-top: 10px;
@@ -60,7 +60,7 @@ nav a:hover {
     color: #000;
 }
 
-/* ------------------ Cabeçalho da Página ------------------ */
+/*Cabeçalho */
 
 .img-logo-home img{
     width: 360px;
@@ -88,7 +88,7 @@ nav a:hover {
     font-weight: 600;
 }
 
-/* ------------------ Apresentação do Site ------------------ */
+/*Apresentação */
 
 .apresenta-site {
     color: #fff;
@@ -110,7 +110,7 @@ nav a:hover {
   padding: 10px;
 }
 
-/* ------------------ Filtros ------------------ */
+/* Filtros */
 
 #searchBox::placeholder {
     color: #000;
@@ -156,7 +156,6 @@ nav a:hover {
     padding-bottom: 20px;
 }
 
-/* CORREÇÃO DO LAYOUT: Permite mais filtros na mesma linha */
 .filter-group {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -309,7 +308,7 @@ nav a:hover {
     padding-top: 30px;
 }
 
-/* ------------------ Cadastro / Perfil ------------------ */
+/*Cadastro e Perfil*/
 
 .perfil-abas {
     display: flex;
@@ -319,7 +318,6 @@ nav a:hover {
     margin-bottom: 40px;
 }
 
-/* Estilo para as abas de perfil (botões) */
 .perfil-abas a,
 .perfil-abas span {
     color: white;
@@ -345,21 +343,20 @@ nav a:hover {
     transform: translateY(-2px);
 }
 
-/* NOVO ESTILO: Link "Criar novo Perfil" */
 .perfil-abas .link-novo-perfil {
-    background: none; /* Remove o fundo de botão */
-    color: #c4f3a9; /* Cor do link (Verde claro) */
+    background: none; 
+    color: #c4f3a9; 
     border: none;
-    padding: 12px 0; /* Ajusta padding para parecer link */
-    text-decoration: underline; /* Adiciona o sublinhado */
-    align-self: center; /* Centraliza verticalmente com os botões */
+    padding: 12px 0; 
+    text-decoration: underline; 
+    align-self: center; 
     margin-left: 20px;
     transition: color 0.2s;
 }
 
 .perfil-abas .link-novo-perfil:hover {
     background: none;
-    color: #fff; /* Muda para branco no hover */
+    color: #fff; 
     transform: none;
 }
 
@@ -386,7 +383,7 @@ nav a:hover {
 .bloco-info {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Spacing between label and input */
+    gap: 8px; 
 }
 
 .bloco-info label {
@@ -398,7 +395,6 @@ nav a:hover {
 }
 
 label.legenda {
-    /* position: absolute; */
     margin-top: -24px;
     color: #fff;
     font-size: 0.9em;
@@ -478,7 +474,7 @@ a.link-editar-filtros:hover {
 }
 
 
-/* ------------------ Login ------------------ */
+/*Entrar*/
 
 .form-login {
   padding: 12px;
@@ -498,7 +494,7 @@ a.link-editar-filtros:hover {
     width: 80%;
 }
 
-/* ------------------ Cards dos Conteúdos ------------------ */
+/*Cards com os conteúdos*/
 
 .items-grid {
     display: grid;
@@ -585,7 +581,7 @@ a.link-editar-filtros:hover {
     color: #1b4e1e;
 }
 
-/* ------------------ Fallback Sem resultados ------------------ */
+/*Sem resultados*/
 
 .loading {
     text-align: center;
@@ -604,7 +600,7 @@ a.link-editar-filtros:hover {
     width: 1200px;
 }
 
-/* ------------------ Fallback Sem resultados ------------------ */
+/* Sem resultados-2 */
 
 img.img-relatorio {
     width: 100%;
@@ -616,20 +612,14 @@ a.link-entrar.btn-float {
     right: 60px;
 }
 
-/* =====================================================
-   ESTILOS ADICIONAIS
-   ===================================================== */
-
-/* Contêiner para centralizar o botão Ver Mais Conteúdos */
+/*Adicionais*/
 .load-more-wrapper {
-    /* Essa regra centraliza o texto/elementos inline-block dentro da div */
     text-align: center; 
     margin: 40px auto; 
     width: 100%;
 }
 
 .btn-load-more {
-    /* Garante que o botão seja exibido inline-block para responder ao text-align: center do wrapper */
     display: inline-block; 
     
     background: linear-gradient(135deg, #014a7a 0%, #7b9871 100%);
@@ -655,7 +645,6 @@ a.link-entrar.btn-float {
     transform: translateY(0);
 }
 
-/* Animação dos pontinhos */
 .btn-load-more .dots {
     font-size: 1.5em;
     animation: pulse 1.5s ease-in-out infinite;
@@ -672,7 +661,6 @@ a.link-entrar.btn-float {
     }
 }
 
-/* Animação quando novos cards aparecem */
 .item-card {
     animation: fadeInUp 0.5s ease-out;
 }
@@ -701,12 +689,7 @@ a.link-entrar.btn-float {
     height: auto;
 }
 
-/* =========================================
-   ESTILOS DO DASHBOARD / RELATÓRIO 
-   (Mantidos, mas fora do escopo principal da correção)
-   ========================================= */
-
-/* Garante que tudo dentro do dashboard use a fonte certa */
+/*Relatório*/
 .dashboard-grid, .dashboard-grid input, .dashboard-grid button {
     font-family: "Quicksand", sans-serif;
 }
